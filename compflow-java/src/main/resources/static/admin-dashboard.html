@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Painel Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html" class="active"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">A</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Admin</h4>
+              <span>Administrador</span>
+            </div>
+            <a href="admin-perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header style="margin-bottom: 22px">
+          <h1 style="color: #7f1d1d; font-size: 22px; margin-bottom: 4px">
+            Painel Administrativo
+          </h1>
+          <p style="color: #777; font-size: 14px" id="subtitulo">
+            Bem-vindo! Gerencie o sistema CompFlow.
+          </p>
+        </header>
+
+        <!-- Stats — GET /api/disciplinas, /api/eventos, /api/contatos -->
+        <div class="stats-grid">
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-disciplinas.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #2f67d8">
+              <i class="fa-solid fa-book"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="statDisc">—</h2>
+              <p>Disciplinas</p>
+              <span>No fluxograma atual</span>
+            </div>
+          </div>
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-eventos.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #ff6b00">
+              <i class="fa-regular fa-calendar"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="statEvt">—</h2>
+              <p>Eventos Cadastrados</p>
+              <span>No semestre atual</span>
+            </div>
+          </div>
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-contatos.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #47b84f">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="statCont">—</h2>
+              <p>Contatos</p>
+              <span>Professores e coordenadores</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #dc2626">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="statAlunos">—</h2>
+              <p>Alunos Ativos</p>
+              <span>Utilizando o sistema</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- Ações Rápidas -->
+          <div class="card">
+            <h2>Ações Rápidas</h2>
+            <div class="quick-actions">
+              <a href="admin-disciplinas.html" class="quick-card">
+                <div class="qicon" style="background: #2f67d8">
+                  <i class="fa-solid fa-book"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Disciplinas</h4>
+                  <p>Adicionar, editar ou remover disciplinas</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-eventos.html" class="quick-card">
+                <div class="qicon" style="background: #ff6b00">
+                  <i class="fa-regular fa-calendar"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Eventos</h4>
+                  <p>Adicionar datas importantes</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-contatos.html" class="quick-card">
+                <div class="qicon" style="background: #47b84f">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Contatos</h4>
+                  <p>Atualizar professores e coordenação</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-curriculos.html" class="quick-card">
+                <div class="qicon" style="background: #7c3aed">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Currículos</h4>
+                  <p>Vincular disciplinas por semestre</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Atividade Recente — GET /api/disciplinas, /api/eventos, /api/contatos -->
+          <div class="card">
+            <h2>Últimos Cadastros</h2>
+            <ul class="activity-list" id="listaAtividade">
+              <li style="color: #aaa; font-size: 13px">Carregando...</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario || usuario.role !== "ADMIN")
+        window.location.href = "login.html";
+
+      document.getElementById("nomeSidebar").textContent = usuario.nome;
+      document.getElementById("avatarSidebar").textContent =
+        usuario.nome[0].toUpperCase();
+      document.getElementById("subtitulo").textContent =
+        `Bem-vindo, ${usuario.nome}! Gerencie o sistema CompFlow.`;
+
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      // GET /api/disciplinas  GET /api/eventos  GET /api/contatos  GET /api/usuarios
+      async function carregarStats() {
+        try {
+          const [resD, resE, resC, resU] = await Promise.all([
+            fetch(`${BASE}/disciplinas`),
+            fetch(`${BASE}/eventos`),
+            fetch(`${BASE}/contatos`),
+            fetch(`${BASE}/usuarios`),
+          ]);
+          const [discs, evts, conts, usuarios] = await Promise.all([
+            resD.json(),
+            resE.json(),
+            resC.json(),
+            resU.json(),
+          ]);
+
+          document.getElementById("statDisc").textContent = discs.length;
+          document.getElementById("statEvt").textContent = evts.length;
+          document.getElementById("statCont").textContent = conts.length;
+          document.getElementById("statAlunos").textContent = usuarios.filter(
+            (u) => u.role === "ALUNO",
+          ).length;
+
+          // Últimos 5 itens combinados (disciplinas + contatos + eventos)
+          const atividades = [
+            ...discs.slice(-3).map((d) => ({
+              texto: "Disciplina",
+              detalhe: d.nome,
+              cor: "#2f67d8",
+            })),
+            ...conts.slice(-2).map((c) => ({
+              texto: "Contato",
+              detalhe: c.nome,
+              cor: "#47b84f",
+            })),
+            ...evts.slice(-2).map((e) => ({
+              texto: "Evento",
+              detalhe: e.titulo,
+              cor: "#ff6b00",
+            })),
+          ].slice(0, 7);
+
+          document.getElementById("listaAtividade").innerHTML =
+            atividades.length
+              ? atividades
+                  .map(
+                    (a) => `
+            <li>
+              <div class="act-dot" style="background:${a.cor}"></div>
+              <div class="act-body">
+                <strong>${a.texto} cadastrado</strong>
+                <span>${a.detalhe}</span>
+              </div>
+            </li>`,
+                  )
+                  .join("")
+              : '<li style="color:#aaa;font-size:13px;">Nenhum cadastro ainda.</li>';
+        } catch {
+          document.getElementById("statDisc").textContent = "—";
+          document.getElementById("statEvt").textContent = "—";
+          document.getElementById("statCont").textContent = "—";
+          document.getElementById("statAlunos").textContent = "—";
+        }
+      }
+
+      carregarStats();
+    </script>
+  </body>
+</html>

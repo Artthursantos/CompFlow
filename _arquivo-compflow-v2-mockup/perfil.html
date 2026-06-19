@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Meu Perfil</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 1fr 210px;
+        gap: 22px;
+        align-items: start;
+      }
+      .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .card-header h2 {
+        color: #173d7a;
+        font-size: 16px;
+      }
+      .edit-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f3f4f8;
+        border: none;
+        color: #173d7a;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-family: inherit;
+      }
+      .edit-btn:hover {
+        background: #e0e4ef;
+      }
+      .avatar-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .profile-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #ff6b00;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .info-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .info-row i {
+        color: #aaa;
+        font-size: 15px;
+        margin-top: 2px;
+        width: 18px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .info-value {
+        font-size: 14px;
+        color: #222;
+        font-weight: 600;
+      }
+      .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .field-group label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #173d7a;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .field-group input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #222;
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .field-group input:focus {
+        border-color: #173d7a;
+        box-shadow: 0 0 0 3px rgba(23, 61, 122, 0.1);
+      }
+      .field-group input:disabled {
+        background: #f8f9fb;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+      .field-group small {
+        font-size: 11px;
+        color: #bbb;
+        margin-top: 3px;
+        display: block;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-save {
+        background: #173d7a;
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-save:hover {
+        background: #0f2c52;
+      }
+      .btn-cancel {
+        background: #f3f4f8;
+        color: #555;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .prog-item {
+        margin-bottom: 14px;
+      }
+      .prog-item:last-child {
+        margin-bottom: 0;
+      }
+      .prog-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .prog-bar {
+        height: 8px;
+        background: #e8eaf0;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 20px;
+        transition: 0.5s;
+      }
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .stat-card {
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      .stat-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+      .stat-card p {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .green-card {
+        background: #edf7ee;
+        color: #2e7d32;
+      }
+      .blue-card {
+        background: #e8f0fb;
+        color: #1a4db0;
+      }
+      .orange-card {
+        background: #fff3ec;
+        color: #c84b00;
+      }
+      .navy-card {
+        background: #e8edf5;
+        color: #173d7a;
+      }
+      .hidden {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .right-col {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .stat-card {
+          flex: 1;
+          min-width: 130px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <nav class="menu">
+          <a href="dashboard.html"><i class="fa-solid fa-house"></i> Início</a>
+          <a href="meuprogresso.html"
+            ><i class="fa-solid fa-award"></i> Meu Progresso</a
+          >
+          <a href="fluxograma.html"
+            ><i class="fa-solid fa-arrow-trend-up"></i> Fluxograma</a
+          >
+          <a href="calendario.html"
+            ><i class="fa-regular fa-calendar"></i> Calendário</a
+          >
+          <a href="contatos.html"><i class="fa-solid fa-users"></i> Contatos</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">U</div>
+            <div class="user-info">
+              <h4>Usuário</h4>
+              <span>Ciência da Computação</span>
+            </div>
+            <a href="perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1>Meu Perfil</h1>
+          <p>Visualize e edite suas informações pessoais</p>
+        </header>
+
+        <div class="profile-layout">
+          <div class="left-col">
+            <!-- Informações Pessoais -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Informações Pessoais</h2>
+                <button
+                  class="edit-btn"
+                  id="btnEditar"
+                  onclick="entrarEdicao()"
+                >
+                  <i class="fa-solid fa-pen"></i> Editar
+                </button>
+              </div>
+
+              <div class="avatar-wrap">
+                <div class="profile-avatar" id="avatarPerfil">U</div>
+              </div>
+
+              <!-- Visualização -->
+              <div id="viewMode" class="info-list">
+                <div class="info-row">
+                  <i class="fa-regular fa-user"></i>
+                  <div>
+                    <span class="info-label">Nome completo</span
+                    ><span class="info-value" id="vNome">Usuário</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-envelope"></i>
+                  <div>
+                    <span class="info-label">E-mail institucional</span
+                    ><span class="info-value">email@inf.ufpel.edu.br</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-id-card"></i>
+                  <div>
+                    <span class="info-label">Matrícula</span
+                    ><span class="info-value">123456</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                  <div>
+                    <span class="info-label">Curso</span
+                    ><span class="info-value">Ciência da Computação</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edição -->
+              <div id="editMode" class="edit-form hidden">
+                <div class="field-group">
+                  <label>Nome completo</label>
+                  <input type="text" id="editNome" value="Usuário" />
+                </div>
+                <div class="field-group">
+                  <label>E-mail institucional</label>
+                  <input type="email" value="email@inf.ufpel.edu.br" disabled />
+                  <small>O e-mail não pode ser alterado.</small>
+                </div>
+                <div class="field-group">
+                  <label>Matrícula</label>
+                  <input type="text" value="123456" disabled />
+                </div>
+                <div class="edit-actions">
+                  <button class="btn-save" onclick="salvar()">Salvar</button>
+                  <button class="btn-cancel" onclick="sairEdicao()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progresso -->
+            <div class="card">
+              <h2 style="color: #173d7a; font-size: 16px; margin-bottom: 18px">
+                Progresso no Curso
+              </h2>
+              <div class="prog-item">
+                <div class="prog-labels">
+                  <span>Disciplinas concluídas</span><span>20 de 41</span>
+                </div>
+                <div class="prog-bar">
+                  <div
+                    class="prog-fill"
+                    style="background: #47b84f; width: 49%"
+                  ></div>
+                </div>
+              </div>
+              <div class="prog-item">
+                <div class="prog-labels">
+                  <span>Créditos obtidos</span><span>78 de 168</span>
+                </div>
+                <div class="prog-bar">
+                  <div
+                    class="prog-fill"
+                    style="background: #2f67d8; width: 46%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="right-col">
+            <div class="stat-card green-card">
+              <h3>20/41</h3>
+              <p>Disciplinas Aprovadas</p>
+            </div>
+            <div class="stat-card blue-card">
+              <h3>78/168</h3>
+              <p>Créditos Concluídos</p>
+            </div>
+            <div class="stat-card orange-card">
+              <h3>5º</h3>
+              <p>Semestre Atual</p>
+            </div>
+            <div class="stat-card navy-card">
+              <h3>49%</h3>
+              <p>Progresso Geral</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function entrarEdicao() {
+        document.getElementById("viewMode").classList.add("hidden");
+        document.getElementById("editMode").classList.remove("hidden");
+        document.getElementById("btnEditar").classList.add("hidden");
+      }
+      function sairEdicao() {
+        document.getElementById("viewMode").classList.remove("hidden");
+        document.getElementById("editMode").classList.add("hidden");
+        document.getElementById("btnEditar").classList.remove("hidden");
+      }
+      function salvar() {
+        const nome = document.getElementById("editNome").value.trim();
+        if (!nome) return;
+        document.getElementById("vNome").textContent = nome;
+        document.getElementById("avatarPerfil").textContent =
+          nome[0].toUpperCase();
+        sairEdicao();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Disciplinas</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html" class="active"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">A</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Admin</h4>
+              <span>Administrador</span>
+            </div>
+            <a href="admin-perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Disciplinas</h1>
+            <p>Gerencie as disciplinas do fluxograma</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Nova Disciplina
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="busca"
+                placeholder="Buscar por nome ou código..."
+                oninput="renderTabela()"
+              />
+            </div>
+            <select
+              class="filter-select"
+              id="filtroTipo"
+              onchange="renderTabela()"
+            >
+              <option value="">Todos os tipos</option>
+              <option value="INTERNO">Interno</option>
+              <option value="EXTERNO">Externo</option>
+            </select>
+          </div>
+          <div class="table-count" id="count"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nome</th>
+                  <th>Créditos</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr>
+                  <td
+                    colspan="5"
+                    style="text-align: center; color: #aaa; padding: 30px"
+                  >
+                    Carregando...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal-overlay hidden"
+      id="modalOverlay"
+      onclick="fecharSeForaModal(event)"
+    >
+      <div class="modal">
+        <h3 id="modalTitulo">Nova Disciplina</h3>
+        <div
+          id="modalAlert"
+          style="
+            display: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+          "
+        ></div>
+        <div class="form-group">
+          <label>Código</label>
+          <input type="text" id="fCodigo" placeholder="ex: 1110179" />
+        </div>
+        <div class="form-group">
+          <label>Nome da Disciplina</label>
+          <input type="text" id="fNome" placeholder="Nome da disciplina" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Créditos</label>
+            <input
+              type="number"
+              id="fCreditos"
+              placeholder="4"
+              min="1"
+              max="20"
+            />
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="fTipo">
+              <option value="INTERNO">Interno (Computação)</option>
+              <option value="EXTERNO">Externo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Pré-requisitos (opcional)</label>
+          <input
+            type="text"
+            id="fPrereq"
+            placeholder="Códigos separados por vírgula"
+          />
+        </div>
+        <div class="form-group">
+          <label>Descrição (opcional)</label>
+          <textarea
+            id="fDesc"
+            placeholder="Breve descrição da disciplina"
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel-modal" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button class="btn-primary" id="btnSalvar" onclick="salvar()">
+            Criar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario || usuario.role !== "ADMIN")
+        window.location.href = "login.html";
+
+      document.getElementById("nomeSidebar").textContent = usuario.nome;
+      document.getElementById("avatarSidebar").textContent =
+        usuario.nome[0].toUpperCase();
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      let disciplinas = [];
+      let editId = null;
+
+      // GET /api/disciplinas
+      async function carregar() {
+        try {
+          const res = await fetch(`${BASE}/disciplinas`);
+          disciplinas = await res.json();
+          renderTabela();
+        } catch {
+          document.getElementById("tbody").innerHTML =
+            '<tr><td colspan="5" style="color:#e53935;text-align:center;padding:20px;">Erro ao carregar. Verifique se a API está rodando.</td></tr>';
+        }
+      }
+
+      function renderTabela() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        const tipo = document.getElementById("filtroTipo").value;
+        let lista = disciplinas;
+        if (busca)
+          lista = lista.filter(
+            (d) =>
+              d.nome.toLowerCase().includes(busca) || d.codigo.includes(busca),
+          );
+        if (tipo) lista = lista.filter((d) => d.tipo === tipo);
+
+        document.getElementById("count").textContent =
+          `Lista de Disciplinas (${lista.length})`;
+        document.getElementById("tbody").innerHTML = lista.length
+          ? lista
+              .map(
+                (d) => `
+      <tr>
+        <td><code style="background:#f3f4f8;padding:2px 8px;border-radius:6px;font-size:12px;">${d.codigo}</code></td>
+        <td style="font-weight:600;">${d.nome}</td>
+        <td>${d.creditos}</td>
+        <td><span class="badge badge-${d.tipo.toLowerCase()}">${d.tipo}</span></td>
+        <td><div class="tbl-actions">
+          <button class="btn-icon btn-edit" onclick="abrirEditar(${d.id})"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon btn-del"  onclick="excluir(${d.id})"><i class="fa-solid fa-trash"></i></button>
+        </div></td>
+      </tr>`,
+              )
+              .join("")
+          : '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px;">Nenhuma disciplina encontrada.</td></tr>';
+      }
+
+      function abrirModal() {
+        editId = null;
+        document.getElementById("modalTitulo").textContent = "Nova Disciplina";
+        document.getElementById("btnSalvar").textContent = "Criar";
+        ["fCodigo", "fNome", "fCreditos", "fPrereq", "fDesc"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("fTipo").value = "INTERNO";
+        document.getElementById("modalAlert").style.display = "none";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function abrirEditar(id) {
+        const d = disciplinas.find((x) => x.id === id);
+        editId = id;
+        document.getElementById("modalTitulo").textContent =
+          "Editar Disciplina";
+        document.getElementById("btnSalvar").textContent = "Salvar";
+        document.getElementById("fCodigo").value = d.codigo;
+        document.getElementById("fNome").value = d.nome;
+        document.getElementById("fCreditos").value = d.creditos;
+        document.getElementById("fTipo").value = d.tipo;
+        document.getElementById("modalAlert").style.display = "none";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+      function fecharSeForaModal(e) {
+        if (e.target === e.currentTarget) fecharModal();
+      }
+
+      // POST /api/disciplinas  ou  PUT /api/disciplinas/{id}
+      async function salvar() {
+        const codigo = document.getElementById("fCodigo").value.trim();
+        const nome = document.getElementById("fNome").value.trim();
+        const creditos =
+          parseInt(document.getElementById("fCreditos").value) || 0;
+        const tipo = document.getElementById("fTipo").value;
+        if (!codigo || !nome || !creditos) {
+          mostrarAlertaModal("Preencha código, nome e créditos.", "#c62828");
+          return;
+        }
+
+        const btn = document.getElementById("btnSalvar");
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
+
+        try {
+          const url = editId
+            ? `${BASE}/disciplinas/${editId}`
+            : `${BASE}/disciplinas`;
+          const method = editId ? "PUT" : "POST";
+          const res = await fetch(url, {
+            method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ codigo, nome, creditos, tipo }),
+          });
+          if (!res.ok) throw new Error(await res.text());
+          fecharModal();
+          carregar();
+        } catch (err) {
+          mostrarAlertaModal(
+            "Erro ao salvar. Código pode já estar em uso.",
+            "#c62828",
+          );
+        } finally {
+          btn.disabled = false;
+          btn.textContent = editId ? "Salvar" : "Criar";
+        }
+      }
+
+      function mostrarAlertaModal(msg, cor) {
+        const el = document.getElementById("modalAlert");
+        el.textContent = msg;
+        el.style.display = "block";
+        el.style.background = "#fde8e8";
+        el.style.color = cor;
+      }
+
+      // DELETE /api/disciplinas/{id}
+      async function excluir(id) {
+        if (!confirm("Excluir esta disciplina?")) return;
+        await fetch(`${BASE}/disciplinas/${id}`, { method: "DELETE" });
+        carregar();
+      }
+
+      carregar();
+    </script>
+  </body>
+</html>

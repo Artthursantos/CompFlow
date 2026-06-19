@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Disciplinas</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html" class="active"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <h4>Admin</h4>
+              <span>Administrador</span>
+            </div>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Disciplinas</h1>
+            <p>Gerencie as disciplinas do fluxograma</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Nova Disciplina
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="busca"
+                placeholder="Buscar por nome ou código..."
+                oninput="render()"
+              />
+            </div>
+            <select class="filter-select" id="filtroTipo" onchange="render()">
+              <option value="">Todos os tipos</option>
+              <option value="Interno">Interno</option>
+              <option value="Externo">Externo</option>
+            </select>
+          </div>
+          <div class="table-count" id="count"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nome</th>
+                  <th>Créditos</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal-overlay hidden"
+      id="modalOverlay"
+      onclick="fecharSeForaModal(event)"
+    >
+      <div class="modal">
+        <h3 id="modalTitulo">Nova Disciplina</h3>
+        <div class="form-group">
+          <label>Código</label>
+          <input type="text" id="fCodigo" placeholder="ex: 1110179" />
+        </div>
+        <div class="form-group">
+          <label>Nome da Disciplina</label>
+          <input type="text" id="fNome" placeholder="Nome da disciplina" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Créditos</label>
+            <input
+              type="number"
+              id="fCreditos"
+              placeholder="4"
+              min="1"
+              max="20"
+            />
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="fTipo">
+              <option value="Interno">Interno (Computação)</option>
+              <option value="Externo">Externo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Pré-requisitos (códigos separados por vírgula)</label>
+          <input type="text" id="fPrereq" placeholder="1110180, 1110182" />
+        </div>
+        <div class="form-group">
+          <label>Descrição (opcional)</label>
+          <textarea
+            id="fDesc"
+            placeholder="Breve descrição da disciplina"
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel-modal" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button class="btn-primary" onclick="salvar()">Criar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let disciplinas = [
+        {
+          id: 1,
+          codigo: "1110179",
+          nome: "Sistemas Discretos",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 2,
+          codigo: "1110180",
+          nome: "Algoritmos e Programação",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 3,
+          codigo: "1110181",
+          nome: "Introdução à Computação",
+          creditos: 2,
+          tipo: "Interno",
+        },
+        {
+          id: 4,
+          codigo: "0100301",
+          nome: "Cálculo 1",
+          creditos: 4,
+          tipo: "Externo",
+        },
+        {
+          id: 5,
+          codigo: "1110182",
+          nome: "Algoritmos e Estrutura de Dados I",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 6,
+          codigo: "0100302",
+          nome: "Álgebra Linear",
+          creditos: 4,
+          tipo: "Externo",
+        },
+        {
+          id: 7,
+          codigo: "1110183",
+          nome: "Algoritmos e Estrutura de Dados II",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 8,
+          codigo: "1110184",
+          nome: "Programação Orientada a Objetos",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 9,
+          codigo: "1110185",
+          nome: "Banco de Dados I",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 10,
+          codigo: "1110186",
+          nome: "Redes de Computadores",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 11,
+          codigo: "1110187",
+          nome: "Sistemas Operacionais",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 12,
+          codigo: "1110188",
+          nome: "Engenharia de Software I",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 13,
+          codigo: "1110189",
+          nome: "Inteligência Artificial",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 14,
+          codigo: "1110190",
+          nome: "Computação Gráfica",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 15,
+          codigo: "1110191",
+          nome: "TCC I",
+          creditos: 4,
+          tipo: "Interno",
+        },
+        {
+          id: 16,
+          codigo: "1110192",
+          nome: "TCC II",
+          creditos: 8,
+          tipo: "Interno",
+        },
+      ];
+      let nextId = 17,
+        editId = null;
+
+      function render() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        const tipo = document.getElementById("filtroTipo").value;
+        let lista = disciplinas;
+        if (busca)
+          lista = lista.filter(
+            (d) =>
+              d.nome.toLowerCase().includes(busca) || d.codigo.includes(busca),
+          );
+        if (tipo) lista = lista.filter((d) => d.tipo === tipo);
+        document.getElementById("count").textContent =
+          `Lista de Disciplinas (${lista.length})`;
+        document.getElementById("tbody").innerHTML = lista
+          .map(
+            (d) => `
+    <tr>
+      <td><code style="background:#f3f4f8;padding:2px 8px;border-radius:6px;font-size:12px;">${d.codigo}</code></td>
+      <td style="font-weight:600;">${d.nome}</td>
+      <td>${d.creditos}</td>
+      <td><span class="badge badge-${d.tipo.toLowerCase()}">${d.tipo}</span></td>
+      <td><div class="tbl-actions">
+        <button class="btn-icon btn-edit" onclick="abrirEditar(${d.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-icon btn-del"  onclick="excluir(${d.id})"><i class="fa-solid fa-trash"></i></button>
+      </div></td>
+    </tr>`,
+          )
+          .join("");
+      }
+
+      function abrirModal() {
+        editId = null;
+        document.getElementById("modalTitulo").textContent = "Nova Disciplina";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Criar";
+        ["fCodigo", "fNome", "fCreditos", "fPrereq", "fDesc"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("fTipo").value = "Interno";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function abrirEditar(id) {
+        const d = disciplinas.find((x) => x.id === id);
+        editId = id;
+        document.getElementById("modalTitulo").textContent =
+          "Editar Disciplina";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Salvar";
+        document.getElementById("fCodigo").value = d.codigo;
+        document.getElementById("fNome").value = d.nome;
+        document.getElementById("fCreditos").value = d.creditos;
+        document.getElementById("fTipo").value = d.tipo;
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+      function fecharSeForaModal(e) {
+        if (e.target === e.currentTarget) fecharModal();
+      }
+
+      function salvar() {
+        const codigo = document.getElementById("fCodigo").value.trim();
+        const nome = document.getElementById("fNome").value.trim();
+        const creditos =
+          parseInt(document.getElementById("fCreditos").value) || 0;
+        const tipo = document.getElementById("fTipo").value;
+        if (!codigo || !nome || !creditos) {
+          alert("Preencha código, nome e créditos.");
+          return;
+        }
+        if (editId) {
+          Object.assign(
+            disciplinas.find((x) => x.id === editId),
+            { codigo, nome, creditos, tipo },
+          );
+        } else {
+          disciplinas.push({ id: nextId++, codigo, nome, creditos, tipo });
+        }
+        fecharModal();
+        render();
+      }
+
+      function excluir(id) {
+        if (!confirm("Excluir esta disciplina?")) return;
+        disciplinas = disciplinas.filter((d) => d.id !== id);
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

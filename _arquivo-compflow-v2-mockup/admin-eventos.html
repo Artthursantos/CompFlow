@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Eventos</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html" class="active"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <h4>Admin</h4>
+              <span>Administrador</span>
+            </div>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Eventos</h1>
+            <p>Gerencie datas importantes e eventos acadêmicos</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Novo Evento
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="busca"
+                placeholder="Buscar por título..."
+                oninput="render()"
+              />
+            </div>
+            <select class="filter-select" id="filtroTipo" onchange="render()">
+              <option value="">Todos os tipos</option>
+              <option value="Prazo">Prazo</option>
+              <option value="Evento Acadêmico">Evento Acadêmico</option>
+              <option value="Feriado">Feriado</option>
+            </select>
+          </div>
+          <div class="table-count" id="count"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal-overlay hidden"
+      id="modalOverlay"
+      onclick="fecharSeForaModal(event)"
+    >
+      <div class="modal">
+        <h3 id="modalTitulo">Novo Evento</h3>
+        <div class="form-group">
+          <label>Título do Evento</label>
+          <input
+            type="text"
+            id="fTitulo"
+            placeholder="ex: Início do Semestre"
+          />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data início</label>
+            <input type="date" id="fDataInicio" />
+          </div>
+          <div class="form-group">
+            <label>Data fim (opcional)</label>
+            <input type="date" id="fDataFim" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="fTipo">
+            <option value="Evento Acadêmico">Evento Acadêmico</option>
+            <option value="Prazo">Prazo</option>
+            <option value="Feriado">Feriado</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel-modal" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button class="btn-primary" onclick="salvar()">Criar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let eventos = [
+        {
+          id: 1,
+          titulo: "Solicitação de rematrícula",
+          data: "05/08/2026 a 06/08/2026",
+          tipo: "Prazo",
+        },
+        {
+          id: 2,
+          titulo: "Processamento das solicitações de rematrícula",
+          data: "07/08/2026",
+          tipo: "Evento Acadêmico",
+        },
+        {
+          id: 3,
+          titulo: "Período de solicitação de trancamento geral",
+          data: "08/08/2026",
+          tipo: "Evento Acadêmico",
+        },
+        {
+          id: 4,
+          titulo: "Início do semestre letivo 2026/2",
+          data: "12/08/2026",
+          tipo: "Evento Acadêmico",
+        },
+        {
+          id: 5,
+          titulo: "Feriado: Independência do Brasil",
+          data: "07/09/2026",
+          tipo: "Feriado",
+        },
+        {
+          id: 6,
+          titulo: "Feriado: Finados",
+          data: "02/11/2026",
+          tipo: "Feriado",
+        },
+        {
+          id: 7,
+          titulo: "Feriado: Consciência Negra",
+          data: "20/11/2026",
+          tipo: "Feriado",
+        },
+        {
+          id: 8,
+          titulo: "FIM: Período de avaliação docente",
+          data: "03/12/2026",
+          tipo: "Prazo",
+        },
+      ];
+      let nextId = 9,
+        editId = null;
+
+      const BADGE = {
+        Prazo: "badge-prazo",
+        "Evento Acadêmico": "badge-academico",
+        Feriado: "badge-feriado",
+      };
+
+      function render() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        const tipo = document.getElementById("filtroTipo").value;
+        let lista = eventos;
+        if (busca)
+          lista = lista.filter((e) => e.titulo.toLowerCase().includes(busca));
+        if (tipo) lista = lista.filter((e) => e.tipo === tipo);
+        document.getElementById("count").textContent =
+          `Lista de Eventos (${lista.length})`;
+        document.getElementById("tbody").innerHTML = lista
+          .map(
+            (e) => `
+    <tr>
+      <td style="font-weight:600;">${e.titulo}</td>
+      <td style="color:#555;white-space:nowrap;">${e.data}</td>
+      <td><span class="badge ${BADGE[e.tipo] || ""}">${e.tipo}</span></td>
+      <td><div class="tbl-actions">
+        <button class="btn-icon btn-edit" onclick="abrirEditar(${e.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-icon btn-del"  onclick="excluir(${e.id})"><i class="fa-solid fa-trash"></i></button>
+      </div></td>
+    </tr>`,
+          )
+          .join("");
+      }
+
+      function abrirModal() {
+        editId = null;
+        document.getElementById("modalTitulo").textContent = "Novo Evento";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Criar";
+        document.getElementById("fTitulo").value = "";
+        document.getElementById("fDataInicio").value = "";
+        document.getElementById("fDataFim").value = "";
+        document.getElementById("fTipo").value = "Evento Acadêmico";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function abrirEditar(id) {
+        const e = eventos.find((x) => x.id === id);
+        editId = id;
+        document.getElementById("modalTitulo").textContent = "Editar Evento";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Salvar";
+        document.getElementById("fTitulo").value = e.titulo;
+        document.getElementById("fTipo").value = e.tipo;
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+      function fecharSeForaModal(e) {
+        if (e.target === e.currentTarget) fecharModal();
+      }
+
+      function salvar() {
+        const titulo = document.getElementById("fTitulo").value.trim();
+        const dataInicio = document.getElementById("fDataInicio").value;
+        const dataFim = document.getElementById("fDataFim").value;
+        const tipo = document.getElementById("fTipo").value;
+        if (!titulo) {
+          alert("Informe o título do evento.");
+          return;
+        }
+
+        // Formata data para exibição
+        function fmt(d) {
+          if (!d) return "";
+          const [a, m, dia] = d.split("-");
+          return `${dia}/${m}/${a}`;
+        }
+        const dataExib = dataFim
+          ? `${fmt(dataInicio)} a ${fmt(dataFim)}`
+          : fmt(dataInicio) || "—";
+
+        if (editId) {
+          Object.assign(
+            eventos.find((x) => x.id === editId),
+            { titulo, data: dataExib, tipo },
+          );
+        } else {
+          eventos.push({ id: nextId++, titulo, data: dataExib, tipo });
+        }
+        fecharModal();
+        render();
+      }
+
+      function excluir(id) {
+        if (!confirm("Excluir este evento?")) return;
+        eventos = eventos.filter((e) => e.id !== id);
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

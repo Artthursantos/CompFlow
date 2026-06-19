@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Perfil Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 1fr 220px;
+        gap: 22px;
+        align-items: start;
+      }
+      .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .card-header h2 {
+        color: #7f1d1d;
+        font-size: 16px;
+      }
+      .edit-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f3f4f8;
+        border: none;
+        color: #7f1d1d;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .edit-btn:hover {
+        background: #fde8e8;
+      }
+      .avatar-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .profile-avatar {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 26px;
+        font-weight: bold;
+      }
+      .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .info-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .info-row > i {
+        color: #aaa;
+        font-size: 15px;
+        margin-top: 2px;
+        width: 18px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .info-value {
+        font-size: 14px;
+        color: #222;
+        font-weight: 600;
+      }
+      .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .field-group label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #7f1d1d;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .field-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #222;
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .field-input:focus {
+        border-color: #991b1b;
+        box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.08);
+      }
+      .field-input:disabled {
+        background: #f8f9fb;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+      .field-group small {
+        font-size: 11px;
+        color: #bbb;
+        margin-top: 3px;
+        display: block;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-save {
+        background: #991b1b;
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-save:hover {
+        background: #7f1d1d;
+      }
+      .btn-save:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn-cancel-form {
+        background: #f3f4f8;
+        color: #555;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .perm-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .perm-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        background: #f8f9fb;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #333;
+        text-decoration: none;
+        transition: 0.2s;
+        border: 1.5px solid #e8eaf0;
+      }
+      .perm-item:hover {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+      .perm-item i {
+        color: #47b84f;
+        width: 16px;
+      }
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .stat-card {
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      }
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .stat-card h3 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .stat-card p {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .green-card {
+        background: #edf7ee;
+        color: #2e7d32;
+      }
+      .blue-card {
+        background: #e8f0fb;
+        color: #1a4db0;
+      }
+      .orange-card {
+        background: #fff3ec;
+        color: #c84b00;
+      }
+      .alert {
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+      }
+      .alert-success {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .alert-error {
+        background: #fde8e8;
+        color: #c62828;
+      }
+      .hidden {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .right-col {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .stat-card {
+          flex: 1;
+          min-width: 130px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">A</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Admin</h4>
+              <span>Administrador</span>
+            </div>
+            <a href="admin-perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1 style="color: #7f1d1d; font-size: 22px; margin-bottom: 4px">
+            Meu Perfil
+          </h1>
+          <p style="color: #777; font-size: 14px">
+            Visualize e edite suas informações pessoais
+          </p>
+        </header>
+
+        <div class="profile-layout">
+          <div class="left-col">
+            <!-- Informações Pessoais -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Informações Pessoais</h2>
+                <button
+                  class="edit-btn"
+                  id="btnEditar"
+                  onclick="entrarEdicao()"
+                >
+                  <i class="fa-solid fa-pen"></i> Editar
+                </button>
+              </div>
+
+              <div class="avatar-wrap">
+                <div class="profile-avatar" id="avatarPerfil">A</div>
+              </div>
+
+              <div id="alertMsg" class="alert hidden"></div>
+
+              <!-- View -->
+              <div id="viewMode" class="info-list">
+                <div class="info-row">
+                  <i class="fa-regular fa-user"></i>
+                  <div>
+                    <span class="info-label">Nome completo</span
+                    ><span class="info-value" id="vNome">—</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-envelope"></i>
+                  <div>
+                    <span class="info-label">E-mail institucional</span
+                    ><span class="info-value" id="vEmail">—</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-id-card"></i>
+                  <div>
+                    <span class="info-label">Função</span
+                    ><span class="info-value">Administrador Do Sistema</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edit -->
+              <div id="editMode" class="edit-form hidden">
+                <div class="field-group">
+                  <label>Nome completo</label>
+                  <input type="text" class="field-input" id="editNome" />
+                </div>
+                <div class="field-group">
+                  <label>E-mail institucional</label>
+                  <input
+                    type="email"
+                    class="field-input"
+                    id="editEmail"
+                    disabled
+                  />
+                  <small>O e-mail não pode ser alterado.</small>
+                </div>
+                <div class="field-group">
+                  <label>Função</label>
+                  <input
+                    type="text"
+                    class="field-input"
+                    value="Administrador Do Sistema"
+                    disabled
+                  />
+                </div>
+                <div class="edit-actions">
+                  <button class="btn-save" id="btnSalvar" onclick="salvar()">
+                    Salvar
+                  </button>
+                  <button class="btn-cancel-form" onclick="sairEdicao()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Permissões e Acesso -->
+            <div class="card">
+              <h2 style="color: #7f1d1d; font-size: 16px; margin-bottom: 16px">
+                Permissões e Acesso
+              </h2>
+              <div class="perm-list">
+                <a href="admin-disciplinas.html" class="perm-item"
+                  ><i class="fa-solid fa-circle-check"></i>Gerenciar
+                  Disciplinas</a
+                >
+                <a href="admin-eventos.html" class="perm-item"
+                  ><i class="fa-solid fa-circle-check"></i>Gerenciar Eventos</a
+                >
+                <a href="admin-contatos.html" class="perm-item"
+                  ><i class="fa-solid fa-circle-check"></i>Gerenciar Contatos</a
+                >
+                <a href="admin-curriculos.html" class="perm-item"
+                  ><i class="fa-solid fa-circle-check"></i>Gerenciar
+                  Currículos</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats — GET /api/disciplinas, /api/contatos, /api/eventos -->
+          <div class="right-col">
+            <div
+              class="stat-card green-card"
+              onclick="location.href = 'admin-disciplinas.html'"
+            >
+              <div class="stat-icon" style="background: #47b84f">
+                <i class="fa-solid fa-book"></i>
+              </div>
+              <div>
+                <h3 id="sDisc">—</h3>
+                <p>Disciplinas</p>
+              </div>
+            </div>
+            <div
+              class="stat-card blue-card"
+              onclick="location.href = 'admin-contatos.html'"
+            >
+              <div class="stat-icon" style="background: #2f67d8">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <h3 id="sCont">—</h3>
+                <p>Contatos</p>
+              </div>
+            </div>
+            <div
+              class="stat-card orange-card"
+              onclick="location.href = 'admin-eventos.html'"
+            >
+              <div class="stat-icon" style="background: #ff6b00">
+                <i class="fa-regular fa-calendar"></i>
+              </div>
+              <div>
+                <h3 id="sEvt">—</h3>
+                <p>Eventos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario || usuario.role !== "ADMIN")
+        window.location.href = "login.html";
+
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      function preencherUI() {
+        document.getElementById("nomeSidebar").textContent = usuario.nome;
+        document.getElementById("avatarSidebar").textContent =
+          usuario.nome[0].toUpperCase();
+        document.getElementById("vNome").textContent = usuario.nome;
+        document.getElementById("vEmail").textContent = usuario.email;
+        document.getElementById("avatarPerfil").textContent =
+          usuario.nome[0].toUpperCase();
+        document.getElementById("editNome").value = usuario.nome;
+        document.getElementById("editEmail").value = usuario.email;
+      }
+
+      // GET /api/disciplinas  GET /api/contatos  GET /api/eventos
+      async function carregarStats() {
+        try {
+          const [resD, resC, resE] = await Promise.all([
+            fetch(`${BASE}/disciplinas`),
+            fetch(`${BASE}/contatos`),
+            fetch(`${BASE}/eventos`),
+          ]);
+          const [discs, conts, evts] = await Promise.all([
+            resD.json(),
+            resC.json(),
+            resE.json(),
+          ]);
+          document.getElementById("sDisc").textContent = discs.length;
+          document.getElementById("sCont").textContent = conts.length;
+          document.getElementById("sEvt").textContent = evts.length;
+        } catch {
+          /* silencia */
+        }
+      }
+
+      function entrarEdicao() {
+        document.getElementById("viewMode").classList.add("hidden");
+        document.getElementById("editMode").classList.remove("hidden");
+        document.getElementById("btnEditar").classList.add("hidden");
+        document.getElementById("alertMsg").classList.add("hidden");
+      }
+
+      function sairEdicao() {
+        document.getElementById("viewMode").classList.remove("hidden");
+        document.getElementById("editMode").classList.add("hidden");
+        document.getElementById("btnEditar").classList.remove("hidden");
+      }
+
+      function mostrarAlerta(msg, tipo) {
+        const el = document.getElementById("alertMsg");
+        el.textContent = msg;
+        el.className = `alert alert-${tipo}`;
+      }
+
+      // PATCH /api/usuarios/{id}/nome
+      async function salvar() {
+        const nome = document.getElementById("editNome").value.trim();
+        if (!nome) return;
+
+        const btn = document.getElementById("btnSalvar");
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
+
+        try {
+          const res = await fetch(`${BASE}/usuarios/${usuario.id}/nome`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome }),
+          });
+          if (!res.ok) throw new Error();
+
+          usuario.nome = nome;
+          localStorage.setItem("usuario", JSON.stringify(usuario));
+          preencherUI();
+          mostrarAlerta("Nome atualizado com sucesso!", "success");
+          sairEdicao();
+        } catch {
+          mostrarAlerta("Erro ao salvar. Tente novamente.", "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Salvar";
+        }
+      }
+
+      preencherUI();
+      carregarStats();
+    </script>
+  </body>
+</html>

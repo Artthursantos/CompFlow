@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Contatos Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html" class="active"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <h4>Admin</h4>
+              <span>Administrador</span>
+            </div>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Contatos</h1>
+            <p>Gerencie professores, coordenação e contatos de apoio</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Novo Contato
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="busca"
+                placeholder="Buscar por nome ou cargo..."
+                oninput="render()"
+              />
+            </div>
+            <select
+              class="filter-select"
+              id="filtroCategoria"
+              onchange="render()"
+            >
+              <option value="">Todas as categorias</option>
+              <option value="Docente">Docente</option>
+              <option value="Apoio">Apoio</option>
+            </select>
+          </div>
+          <div class="table-count" id="count"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Categoria</th>
+                  <th>Cargo / Função</th>
+                  <th>E-mail</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal-overlay hidden"
+      id="modalOverlay"
+      onclick="fecharSeForaModal(event)"
+    >
+      <div class="modal">
+        <h3 id="modalTitulo">Novo Contato</h3>
+        <div class="form-group">
+          <label>Nome Completo</label>
+          <input type="text" id="fNome" placeholder="Nome Completo" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoria</label>
+            <select id="fCategoria">
+              <option value="Docente">Docente</option>
+              <option value="Apoio">Apoio</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Cargo / Função</label>
+            <input
+              type="text"
+              id="fCargo"
+              placeholder="ex: Professor de Algoritmos"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input
+            type="email"
+            id="fEmail"
+            placeholder="email@inf.ufpel.edu.br"
+          />
+        </div>
+        <div class="form-group">
+          <label>Departamento (opcional)</label>
+          <input
+            type="text"
+            id="fDepto"
+            placeholder="Centro de Desenvolvimento Tecnológico"
+          />
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel-modal" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button class="btn-primary" onclick="salvar()">Criar</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let contatos = [
+        {
+          id: 1,
+          nome: "Prof. Dr. ANA MARILZA PERNAS FLEISCHMANN",
+          categoria: "Docente",
+          cargo: "Docente",
+          email: "marilza@inf.ufpel.edu.br",
+        },
+        {
+          id: 2,
+          nome: "Prof. Dr. ANDRE RAUBER DU BOIS",
+          categoria: "Docente",
+          cargo: "Docente",
+          email: "dubois@inf.ufpel.edu.br",
+        },
+        {
+          id: 3,
+          nome: "Secretaria da Ciência da Computação",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "secretaria-ccomp@inf.ufpel.edu.br",
+        },
+        {
+          id: 4,
+          nome: "Coordenação Ciência da Computação",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "coord_ccomp@inf.ufpel.edu.br",
+        },
+        {
+          id: 5,
+          nome: "Coordenação Engenharia de Computação",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "coord_engcomp@inf.ufpel.edu.br",
+        },
+        {
+          id: 6,
+          nome: "Secretaria da Engenharia de Computação",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "secretaria-engcomp@inf.ufpel.edu.br",
+        },
+        {
+          id: 7,
+          nome: "NÚCLEO DE ACESSIBILIDADE E INCLUSÃO – NAI",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "nai@ufpel.edu.br",
+        },
+        {
+          id: 8,
+          nome: "Ouvidoria UFPel",
+          categoria: "Apoio",
+          cargo: "Apoio",
+          email: "ouvidoria@ufpel.edu.br",
+        },
+        {
+          id: 9,
+          nome: "Prof. Dr. Maria Silva",
+          categoria: "Docente",
+          cargo: "Docente",
+          email: "maria@inf.ufpel.edu.br",
+        },
+      ];
+      let nextId = 10,
+        editId = null;
+
+      function render() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        const cat = document.getElementById("filtroCategoria").value;
+        let lista = contatos;
+        if (busca)
+          lista = lista.filter(
+            (c) =>
+              c.nome.toLowerCase().includes(busca) ||
+              c.cargo.toLowerCase().includes(busca),
+          );
+        if (cat) lista = lista.filter((c) => c.categoria === cat);
+        document.getElementById("count").textContent =
+          `Lista de Contatos (${lista.length})`;
+        document.getElementById("tbody").innerHTML = lista
+          .map(
+            (c) => `
+    <tr>
+      <td style="font-weight:600;">${c.nome}</td>
+      <td><span class="badge badge-${c.categoria.toLowerCase()}">${c.categoria}</span></td>
+      <td style="color:#555;">${c.cargo}</td>
+      <td style="color:#555;">${c.email}</td>
+      <td><div class="tbl-actions">
+        <button class="btn-icon btn-edit" onclick="abrirEditar(${c.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-icon btn-del"  onclick="excluir(${c.id})"><i class="fa-solid fa-trash"></i></button>
+      </div></td>
+    </tr>`,
+          )
+          .join("");
+      }
+
+      function abrirModal() {
+        editId = null;
+        document.getElementById("modalTitulo").textContent = "Novo Contato";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Criar";
+        ["fNome", "fCargo", "fEmail", "fDepto"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("fCategoria").value = "Docente";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function abrirEditar(id) {
+        const c = contatos.find((x) => x.id === id);
+        editId = id;
+        document.getElementById("modalTitulo").textContent = "Editar Contato";
+        document.querySelector("#modalOverlay .btn-primary").textContent =
+          "Salvar";
+        document.getElementById("fNome").value = c.nome;
+        document.getElementById("fCargo").value = c.cargo;
+        document.getElementById("fCategoria").value = c.categoria;
+        document.getElementById("fEmail").value = c.email;
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+      function fecharSeForaModal(e) {
+        if (e.target === e.currentTarget) fecharModal();
+      }
+
+      function salvar() {
+        const nome = document.getElementById("fNome").value.trim();
+        const cargo = document.getElementById("fCargo").value.trim();
+        const categoria = document.getElementById("fCategoria").value;
+        const email = document.getElementById("fEmail").value.trim();
+        if (!nome || !email) {
+          alert("Nome e e-mail são obrigatórios.");
+          return;
+        }
+        if (editId) {
+          Object.assign(
+            contatos.find((x) => x.id === editId),
+            { nome, cargo, categoria, email },
+          );
+        } else {
+          contatos.push({ id: nextId++, nome, cargo, categoria, email });
+        }
+        fecharModal();
+        render();
+      }
+
+      function excluir(id) {
+        if (!confirm("Excluir este contato?")) return;
+        contatos = contatos.filter((c) => c.id !== id);
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

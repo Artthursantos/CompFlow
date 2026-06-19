@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Meu Perfil</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 1fr 210px;
+        gap: 22px;
+        align-items: start;
+      }
+      .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .card-header h2 {
+        color: #173d7a;
+        font-size: 16px;
+      }
+      .edit-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f3f4f8;
+        border: none;
+        color: #173d7a;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-family: inherit;
+      }
+      .edit-btn:hover {
+        background: #e0e4ef;
+      }
+      .avatar-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .profile-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #ff6b00;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .info-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .info-row i {
+        color: #aaa;
+        font-size: 15px;
+        margin-top: 2px;
+        width: 18px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .info-value {
+        font-size: 14px;
+        color: #222;
+        font-weight: 600;
+      }
+      .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .field-group label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #173d7a;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .field-group input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #222;
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .field-group input:focus {
+        border-color: #173d7a;
+        box-shadow: 0 0 0 3px rgba(23, 61, 122, 0.1);
+      }
+      .field-group input:disabled {
+        background: #f8f9fb;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+      .field-group small {
+        font-size: 11px;
+        color: #bbb;
+        margin-top: 3px;
+        display: block;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-save {
+        background: #173d7a;
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-save:hover {
+        background: #0f2c52;
+      }
+      .btn-save:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn-cancel {
+        background: #f3f4f8;
+        color: #555;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .prog-item {
+        margin-bottom: 14px;
+      }
+      .prog-item:last-child {
+        margin-bottom: 0;
+      }
+      .prog-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 6px;
+        font-weight: 600;
+      }
+      .prog-bar {
+        height: 8px;
+        background: #e8eaf0;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 20px;
+        transition: 0.5s;
+        width: 0%;
+      }
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .stat-card {
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      .stat-card h3 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+      .stat-card p {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .green-card {
+        background: #edf7ee;
+        color: #2e7d32;
+      }
+      .blue-card {
+        background: #e8f0fb;
+        color: #1a4db0;
+      }
+      .orange-card {
+        background: #fff3ec;
+        color: #c84b00;
+      }
+      .navy-card {
+        background: #e8edf5;
+        color: #173d7a;
+      }
+      .alert {
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+      }
+      .alert-success {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .alert-error {
+        background: #fde8e8;
+        color: #c62828;
+      }
+      .hidden {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .right-col {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .stat-card {
+          flex: 1;
+          min-width: 130px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <nav class="menu">
+          <a href="dashboard.html"><i class="fa-solid fa-house"></i> Início</a>
+          <a href="meuprogresso.html"
+            ><i class="fa-solid fa-award"></i> Meu Progresso</a
+          >
+          <a href="fluxograma.html"
+            ><i class="fa-solid fa-arrow-trend-up"></i> Fluxograma</a
+          >
+          <a href="calendario.html"
+            ><i class="fa-regular fa-calendar"></i> Calendário</a
+          >
+          <a href="contatos.html"><i class="fa-solid fa-users"></i> Contatos</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">U</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar"></h4>
+              <span id="cursoSidebar"></span>
+            </div>
+            <a href="perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1>Meu Perfil</h1>
+          <p>Visualize e edite suas informações pessoais</p>
+        </header>
+
+        <div class="profile-layout">
+          <div class="left-col">
+            <!-- Informações Pessoais -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Informações Pessoais</h2>
+                <button
+                  class="edit-btn"
+                  id="btnEditar"
+                  onclick="entrarEdicao()"
+                >
+                  <i class="fa-solid fa-pen"></i> Editar
+                </button>
+              </div>
+
+              <div class="avatar-wrap">
+                <div class="profile-avatar" id="avatarPerfil">U</div>
+              </div>
+
+              <div id="alertMsg" class="alert hidden"></div>
+
+              <!-- View -->
+              <div id="viewMode" class="info-list">
+                <div class="info-row">
+                  <i class="fa-regular fa-user"></i>
+                  <div>
+                    <span class="info-label">Nome completo</span
+                    ><span class="info-value" id="vNome">—</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-envelope"></i>
+                  <div>
+                    <span class="info-label">E-mail institucional</span
+                    ><span class="info-value" id="vEmail">—</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                  <div>
+                    <span class="info-label">Curso</span
+                    ><span class="info-value" id="vCurso">—</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edit -->
+              <div id="editMode" class="edit-form hidden">
+                <div class="field-group">
+                  <label>Nome completo</label>
+                  <input type="text" id="editNome" />
+                </div>
+                <div class="field-group">
+                  <label>E-mail institucional</label>
+                  <input type="email" id="editEmail" disabled />
+                  <small>O e-mail não pode ser alterado.</small>
+                </div>
+                <div class="field-group">
+                  <label>Curso</label>
+                  <input type="text" id="editCurso" disabled />
+                </div>
+                <div class="edit-actions">
+                  <button class="btn-save" id="btnSalvar" onclick="salvar()">
+                    Salvar
+                  </button>
+                  <button class="btn-cancel" onclick="sairEdicao()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progresso -->
+            <div class="card">
+              <h2 style="color: #173d7a; font-size: 16px; margin-bottom: 18px">
+                Progresso no Curso
+              </h2>
+              <div class="prog-item">
+                <div class="prog-labels">
+                  <span>Disciplinas concluídas</span><span id="lDisc">—</span>
+                </div>
+                <div class="prog-bar">
+                  <div
+                    class="prog-fill"
+                    id="discBar"
+                    style="background: #47b84f"
+                  ></div>
+                </div>
+              </div>
+              <div class="prog-item">
+                <div class="prog-labels">
+                  <span>Créditos obtidos</span><span id="lCred">—</span>
+                </div>
+                <div class="prog-bar">
+                  <div
+                    class="prog-fill"
+                    id="credBar"
+                    style="background: #2f67d8"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="right-col">
+            <div class="stat-card green-card">
+              <h3 id="sDisc">—</h3>
+              <p>Disciplinas Aprovadas</p>
+            </div>
+            <div class="stat-card blue-card">
+              <h3 id="sCred">—</h3>
+              <p>Créditos Concluídos</p>
+            </div>
+            <div class="stat-card orange-card">
+              <h3 id="sSem">—</h3>
+              <p>Semestre Atual</p>
+            </div>
+            <div class="stat-card navy-card">
+              <h3 id="sPct">—</h3>
+              <p>Progresso Geral</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario) window.location.href = "login.html";
+
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      function preencherSidebar() {
+        document.getElementById("nomeSidebar").textContent = usuario.nome;
+        document.getElementById("cursoSidebar").textContent =
+          usuario.nomeCurso || "";
+        document.getElementById("avatarSidebar").textContent =
+          usuario.nome[0].toUpperCase();
+      }
+
+      function preencherPerfil() {
+        document.getElementById("vNome").textContent = usuario.nome;
+        document.getElementById("vEmail").textContent = usuario.email;
+        document.getElementById("vCurso").textContent =
+          usuario.nomeCurso || "—";
+        document.getElementById("avatarPerfil").textContent =
+          usuario.nome[0].toUpperCase();
+        document.getElementById("editNome").value = usuario.nome;
+        document.getElementById("editEmail").value = usuario.email;
+        document.getElementById("editCurso").value = usuario.nomeCurso || "";
+      }
+
+      // GET /api/progresso/{usuarioId}
+      async function carregarProgresso() {
+        try {
+          const res = await fetch(`${BASE}/progresso/${usuario.id}`);
+          const prog = await res.json();
+
+          document.getElementById("sDisc").textContent =
+            `${prog.aprovadas}/${prog.totalDisciplinas}`;
+          document.getElementById("sCred").textContent =
+            `${prog.creditorConcluidos}/${prog.totalCreditos}`;
+          document.getElementById("sPct").textContent = prog.percentual + "%";
+
+          document.getElementById("lDisc").textContent =
+            `${prog.aprovadas} de ${prog.totalDisciplinas}`;
+          document.getElementById("lCred").textContent =
+            `${prog.creditorConcluidos} de ${prog.totalCreditos}`;
+
+          const pctDisc =
+            prog.totalDisciplinas > 0
+              ? Math.round((prog.aprovadas / prog.totalDisciplinas) * 100)
+              : 0;
+          const pctCred =
+            prog.totalCreditos > 0
+              ? Math.round((prog.creditorConcluidos / prog.totalCreditos) * 100)
+              : 0;
+
+          document.getElementById("discBar").style.width = pctDisc + "%";
+          document.getElementById("credBar").style.width = pctCred + "%";
+
+          // Semestre atual: número do último semestre com pelo menos uma disciplina aprovada
+          if (prog.semestres && prog.semestres.length) {
+            const semAtual =
+              prog.semestres.filter((s) =>
+                s.disciplinas.some((d) => d.status === "APROVADO"),
+              ).length || 1;
+            document.getElementById("sSem").textContent = semAtual + "º";
+          }
+        } catch {
+          /* silencia erro de progresso */
+        }
+      }
+
+      function entrarEdicao() {
+        document.getElementById("viewMode").classList.add("hidden");
+        document.getElementById("editMode").classList.remove("hidden");
+        document.getElementById("btnEditar").classList.add("hidden");
+        document.getElementById("alertMsg").classList.add("hidden");
+      }
+
+      function sairEdicao() {
+        document.getElementById("viewMode").classList.remove("hidden");
+        document.getElementById("editMode").classList.add("hidden");
+        document.getElementById("btnEditar").classList.remove("hidden");
+      }
+
+      function mostrarAlerta(msg, tipo) {
+        const el = document.getElementById("alertMsg");
+        el.textContent = msg;
+        el.className = `alert alert-${tipo}`;
+      }
+
+      // PATCH /api/usuarios/{id}/nome
+      async function salvar() {
+        const nome = document.getElementById("editNome").value.trim();
+        if (!nome) return;
+
+        const btn = document.getElementById("btnSalvar");
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
+
+        try {
+          const res = await fetch(`${BASE}/usuarios/${usuario.id}/nome`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome }),
+          });
+
+          if (!res.ok) throw new Error();
+
+          // Atualiza localStorage
+          usuario.nome = nome;
+          localStorage.setItem("usuario", JSON.stringify(usuario));
+
+          preencherPerfil();
+          preencherSidebar();
+          mostrarAlerta("Nome atualizado com sucesso!", "success");
+          sairEdicao();
+        } catch {
+          mostrarAlerta("Erro ao salvar. Tente novamente.", "error");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Salvar";
+        }
+      }
+
+      // Init
+      preencherSidebar();
+      preencherPerfil();
+      carregarProgresso();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+# Build do backend (Maven)
+compflow-java/target/
+
+# Logs
+*.log
+
+# Sistema operacional
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Arquivos locais sensiveis
+*.env
+application-local.properties

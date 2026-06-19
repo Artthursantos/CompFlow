@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Meu Perfil Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .profile-layout {
+        display: grid;
+        grid-template-columns: 1fr 220px;
+        gap: 22px;
+        align-items: start;
+      }
+      .left-col {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      /* Card cabeçalho */
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .card-header h2 {
+        color: #7f1d1d;
+        font-size: 16px;
+      }
+      .edit-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f3f4f8;
+        border: none;
+        color: #7f1d1d;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .edit-btn:hover {
+        background: #fde8e8;
+      }
+
+      /* Avatar */
+      .avatar-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .profile-avatar {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 26px;
+        font-weight: bold;
+      }
+
+      /* Info list */
+      .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .info-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .info-row > i {
+        color: #aaa;
+        font-size: 15px;
+        margin-top: 2px;
+        width: 18px;
+      }
+      .info-label {
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .info-value {
+        font-size: 14px;
+        color: #222;
+        font-weight: 600;
+      }
+
+      /* Edit form */
+      .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .field-group label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #7f1d1d;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .field-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #222;
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .field-input:focus {
+        border-color: #991b1b;
+        box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.08);
+      }
+      .field-input:disabled {
+        background: #f8f9fb;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+      .field-group small {
+        font-size: 11px;
+        color: #bbb;
+        margin-top: 3px;
+        display: block;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-save {
+        background: #991b1b;
+        color: white;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-save:hover {
+        background: #7f1d1d;
+      }
+      .btn-cancel-form {
+        background: #f3f4f8;
+        color: #555;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      /* Permissões */
+      .perm-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .perm-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        background: #f8f9fb;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #333;
+        text-decoration: none;
+        transition: 0.2s;
+        border: 1.5px solid #e8eaf0;
+      }
+      .perm-item:hover {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+      }
+      .perm-item i {
+        color: #47b84f;
+        width: 16px;
+      }
+
+      /* Stats coluna direita */
+      .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .stat-card {
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .stat-card h3 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .stat-card p {
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .green-card {
+        background: #edf7ee;
+        color: #2e7d32;
+      }
+      .blue-card {
+        background: #e8f0fb;
+        color: #1a4db0;
+      }
+      .orange-card {
+        background: #fff3ec;
+        color: #c84b00;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .profile-layout {
+          grid-template-columns: 1fr;
+        }
+        .right-col {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .stat-card {
+          flex: 1;
+          min-width: 130px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">A</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Admin</h4>
+              <span>Administrador</span>
+            </div>
+            <a href="admin-perfil.html" title="Perfil">
+              <i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i>
+            </a>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1 style="color: #7f1d1d; font-size: 22px; margin-bottom: 4px">
+            Meu Perfil
+          </h1>
+          <p style="color: #777; font-size: 14px">
+            Visualize e edite suas informações pessoais
+          </p>
+        </header>
+
+        <div class="profile-layout">
+          <div class="left-col">
+            <!-- Informações Pessoais -->
+            <div class="card">
+              <div class="card-header">
+                <h2>Informações Pessoais</h2>
+                <button
+                  class="edit-btn"
+                  id="btnEditar"
+                  onclick="entrarEdicao()"
+                >
+                  <i class="fa-solid fa-pen"></i> Editar
+                </button>
+              </div>
+
+              <div class="avatar-wrap">
+                <div class="profile-avatar" id="avatarPerfil">A</div>
+              </div>
+
+              <!-- View -->
+              <div id="viewMode" class="info-list">
+                <div class="info-row">
+                  <i class="fa-regular fa-user"></i>
+                  <div>
+                    <span class="info-label">Nome completo</span>
+                    <span class="info-value" id="vNome">Usuário</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-envelope"></i>
+                  <div>
+                    <span class="info-label">E-mail institucional</span>
+                    <span class="info-value">email@inf.ufpel.edu.br</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <i class="fa-regular fa-id-card"></i>
+                  <div>
+                    <span class="info-label">Função</span>
+                    <span class="info-value">Administrador Do Sistema</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edit -->
+              <div id="editMode" class="edit-form hidden">
+                <div class="field-group">
+                  <label>Nome completo</label>
+                  <input
+                    type="text"
+                    class="field-input"
+                    id="editNome"
+                    value="Usuário"
+                  />
+                </div>
+                <div class="field-group">
+                  <label>E-mail institucional</label>
+                  <input
+                    type="email"
+                    class="field-input"
+                    value="email@inf.ufpel.edu.br"
+                    disabled
+                  />
+                  <small>O e-mail não pode ser alterado.</small>
+                </div>
+                <div class="field-group">
+                  <label>Função</label>
+                  <input
+                    type="text"
+                    class="field-input"
+                    value="Administrador Do Sistema"
+                    disabled
+                  />
+                </div>
+                <div class="edit-actions">
+                  <button class="btn-save" onclick="salvar()">Salvar</button>
+                  <button class="btn-cancel-form" onclick="sairEdicao()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Permissões e Acesso -->
+            <div class="card">
+              <h2 style="color: #7f1d1d; font-size: 16px; margin-bottom: 16px">
+                Permissões e Acesso
+              </h2>
+              <div class="perm-list">
+                <a href="admin-disciplinas.html" class="perm-item">
+                  <i class="fa-solid fa-circle-check"></i>
+                  Gerenciar Disciplinas
+                </a>
+                <a href="admin-eventos.html" class="perm-item">
+                  <i class="fa-solid fa-circle-check"></i>
+                  Gerenciar Eventos
+                </a>
+                <a href="admin-contatos.html" class="perm-item">
+                  <i class="fa-solid fa-circle-check"></i>
+                  Gerenciar Contatos
+                </a>
+                <a href="admin-curriculos.html" class="perm-item">
+                  <i class="fa-solid fa-circle-check"></i>
+                  Gerenciar Currículos
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats direita -->
+          <div class="right-col">
+            <div class="stat-card green-card">
+              <div class="stat-icon" style="background: #47b84f">
+                <i class="fa-solid fa-book"></i>
+              </div>
+              <div>
+                <h3>41</h3>
+                <p>Disciplinas</p>
+              </div>
+            </div>
+            <div class="stat-card blue-card">
+              <div class="stat-icon" style="background: #2f67d8">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <h3>9</h3>
+                <p>Contatos</p>
+              </div>
+            </div>
+            <div class="stat-card orange-card">
+              <div class="stat-icon" style="background: #ff6b00">
+                <i class="fa-regular fa-calendar"></i>
+              </div>
+              <div>
+                <h3>14</h3>
+                <p>Eventos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function entrarEdicao() {
+        document.getElementById("viewMode").classList.add("hidden");
+        document.getElementById("editMode").classList.remove("hidden");
+        document.getElementById("btnEditar").classList.add("hidden");
+      }
+
+      function sairEdicao() {
+        document.getElementById("viewMode").classList.remove("hidden");
+        document.getElementById("editMode").classList.add("hidden");
+        document.getElementById("btnEditar").classList.remove("hidden");
+      }
+
+      function salvar() {
+        const nome = document.getElementById("editNome").value.trim();
+        if (!nome) return;
+        document.getElementById("vNome").textContent = nome;
+        document.getElementById("nomeSidebar").textContent = nome;
+        document.getElementById("avatarSidebar").textContent =
+          nome[0].toUpperCase();
+        document.getElementById("avatarPerfil").textContent =
+          nome[0].toUpperCase();
+        sairEdicao();
+      }
+    </script>
+  </body>
+</html>

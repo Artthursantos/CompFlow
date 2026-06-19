@@ -1,0 +1,318 @@
+<!-- ============================================================
+     contatos.html — salve este bloco como contatos.html
+     ============================================================ -->
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Contatos</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .search-bar {
+        background: white;
+        border-radius: 16px;
+        padding: 16px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+      }
+      .search-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f3f4f8;
+        border-radius: 10px;
+        padding: 9px 14px;
+        margin-bottom: 12px;
+      }
+      .search-wrap i {
+        color: #aaa;
+      }
+      .search-wrap input {
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 13px;
+        color: #333;
+        width: 100%;
+        font-family: inherit;
+      }
+      .search-wrap input::placeholder {
+        color: #bbb;
+      }
+      .filter-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tab {
+        border: none;
+        background: #f3f4f8;
+        color: #555;
+        padding: 7px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+        font-family: inherit;
+      }
+      .tab.active {
+        background: #173d7a;
+        color: white;
+      }
+      .tab:hover:not(.active) {
+        background: #e0e4ef;
+      }
+      .contacts-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .contact-card {
+        background: white;
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        transition: 0.2s;
+      }
+      .contact-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      }
+      .c-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 17px;
+        flex-shrink: 0;
+      }
+      .c-info h4 {
+        color: #173d7a;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 3px;
+      }
+      .c-cargo {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 5px;
+      }
+      .c-email {
+        font-size: 12px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+      }
+      .c-email:hover {
+        color: #173d7a;
+      }
+      .c-email i {
+        color: #bbb;
+        font-size: 11px;
+      }
+      .empty {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 50px;
+        color: #aaa;
+      }
+      .loading {
+        text-align: center;
+        color: #aaa;
+        padding: 40px;
+        font-size: 14px;
+      }
+      @media (max-width: 1100px) {
+        .contacts-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .contacts-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <nav class="menu">
+          <a href="dashboard.html"><i class="fa-solid fa-house"></i> Início</a>
+          <a href="meuprogresso.html"
+            ><i class="fa-solid fa-award"></i> Meu Progresso</a
+          >
+          <a href="fluxograma.html"
+            ><i class="fa-solid fa-arrow-trend-up"></i> Fluxograma</a
+          >
+          <a href="calendario.html"
+            ><i class="fa-regular fa-calendar"></i> Calendário</a
+          >
+          <a href="contatos.html" class="active"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">U</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar"></h4>
+              <span id="cursoSidebar"></span>
+            </div>
+            <a href="perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1>Contatos</h1>
+          <p>Encontre professores, coordenação e projetos de apoio</p>
+        </header>
+        <div class="search-bar">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              id="busca"
+              placeholder="Buscar por nome, cargo ou e-mail..."
+              oninput="renderContatos()"
+            />
+          </div>
+          <div class="filter-tabs">
+            <button class="tab active" onclick="setFiltro('todos', this)">
+              Todos
+            </button>
+            <button class="tab" onclick="setFiltro('DOCENTE', this)">
+              Professores
+            </button>
+            <button class="tab" onclick="setFiltro('APOIO', this)">
+              Apoio
+            </button>
+          </div>
+        </div>
+        <div class="contacts-grid" id="gridContatos">
+          <div class="loading" style="grid-column: 1/-1">
+            Carregando contatos...
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario) window.location.href = "login.html";
+
+      document.getElementById("nomeSidebar").textContent = usuario.nome;
+      document.getElementById("cursoSidebar").textContent =
+        usuario.nomeCurso || "";
+      document.getElementById("avatarSidebar").textContent =
+        usuario.nome[0].toUpperCase();
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      const CORES = [
+        "#e53935",
+        "#8e24aa",
+        "#00897b",
+        "#f4511e",
+        "#3949ab",
+        "#6d4c41",
+        "#546e7a",
+        "#2e7d32",
+        "#1565c0",
+      ];
+      let contatos = [],
+        filtroAtivo = "todos";
+
+      // GET /api/contatos
+      async function carregarContatos() {
+        try {
+          const res = await fetch(`${BASE}/contatos`);
+          contatos = await res.json();
+          renderContatos();
+        } catch {
+          document.getElementById("gridContatos").innerHTML =
+            '<div class="empty" style="color:#e53935;">Erro ao carregar contatos.</div>';
+        }
+      }
+
+      function setFiltro(f, btn) {
+        filtroAtivo = f;
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        btn.classList.add("active");
+        renderContatos();
+      }
+
+      function renderContatos() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        let lista = contatos;
+        if (filtroAtivo !== "todos")
+          lista = lista.filter((c) => c.categoria === filtroAtivo);
+        if (busca)
+          lista = lista.filter(
+            (c) =>
+              c.nome.toLowerCase().includes(busca) ||
+              (c.cargo || "").toLowerCase().includes(busca) ||
+              c.email.includes(busca),
+          );
+
+        const grid = document.getElementById("gridContatos");
+        if (!lista.length) {
+          grid.innerHTML = `<div class="empty"><i class="fa-solid fa-user-slash" style="font-size:40px;margin-bottom:12px;display:block;"></i>Nenhum contato encontrado.</div>`;
+          return;
+        }
+        grid.innerHTML = lista
+          .map((c, i) => {
+            const ini = c.nome
+              .trim()
+              .split(/\s+/)
+              .slice(0, 2)
+              .map((p) => p[0])
+              .join("")
+              .toUpperCase();
+            return `<div class="contact-card">
+        <div class="c-avatar" style="background:${CORES[i % CORES.length]}">${ini}</div>
+        <div class="c-info">
+          <h4>${c.nome}</h4>
+          <div class="c-cargo">${c.cargo || ""}</div>
+          <a class="c-email" href="mailto:${c.email}"><i class="fa-regular fa-envelope"></i>${c.email}</a>
+        </div>
+      </div>`;
+          })
+          .join("");
+      }
+
+      carregarContatos();
+    </script>
+  </body>
+</html>

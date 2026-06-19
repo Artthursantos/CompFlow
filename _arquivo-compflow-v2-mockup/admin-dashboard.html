@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Painel Admin</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html" class="active"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <h4>Admin</h4>
+              <span>Administrador</span>
+            </div>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header style="margin-bottom: 22px">
+          <h1 style="color: #7f1d1d; font-size: 22px; margin-bottom: 4px">
+            Painel Administrativo
+          </h1>
+          <p style="color: #777; font-size: 14px">
+            Bem-vindo, Admin! Gerencie o sistema CompFlow.
+          </p>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-disciplinas.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #2f67d8">
+              <i class="fa-solid fa-book"></i>
+            </div>
+            <div class="stat-body">
+              <h2>41</h2>
+              <p>Disciplinas</p>
+              <span>No fluxograma atual</span>
+            </div>
+          </div>
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-eventos.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #ff6b00">
+              <i class="fa-regular fa-calendar"></i>
+            </div>
+            <div class="stat-body">
+              <h2>14</h2>
+              <p>Eventos Cadastrados</p>
+              <span>No semestre atual</span>
+            </div>
+          </div>
+          <div
+            class="stat-card"
+            onclick="location.href = 'admin-contatos.html'"
+            style="cursor: pointer"
+          >
+            <div class="stat-icon" style="background: #47b84f">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-body">
+              <h2>9</h2>
+              <p>Contatos</p>
+              <span>Professores e coordenadores</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #dc2626">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="stat-body">
+              <h2>156</h2>
+              <p>Alunos Ativos</p>
+              <span>Utilizando o sistema</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- Ações Rápidas -->
+          <div class="card">
+            <h2>Ações Rápidas</h2>
+            <div class="quick-actions">
+              <a href="admin-disciplinas.html" class="quick-card">
+                <div class="qicon" style="background: #2f67d8">
+                  <i class="fa-solid fa-book"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Disciplinas</h4>
+                  <p>Adicionar, editar ou remover disciplinas</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-eventos.html" class="quick-card">
+                <div class="qicon" style="background: #ff6b00">
+                  <i class="fa-regular fa-calendar"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Eventos</h4>
+                  <p>Adicionar datas importantes</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-contatos.html" class="quick-card">
+                <div class="qicon" style="background: #47b84f">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Contatos</h4>
+                  <p>Atualizar professores e coordenação</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+              <a href="admin-curriculos.html" class="quick-card">
+                <div class="qicon" style="background: #7c3aed">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                  <h4>Gerenciar Currículos</h4>
+                  <p>Vincular disciplinas por semestre</p>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Atividade Recente -->
+          <div class="card">
+            <h2>Atividade Recente</h2>
+            <ul class="activity-list">
+              <li>
+                <div class="act-dot" style="background: #2f67d8"></div>
+                <div class="act-body">
+                  <strong>Disciplina atualizada</strong
+                  ><span>Algoritmos e Estrutura de Dados I</span
+                  ><time>2 horas atrás</time>
+                </div>
+              </li>
+              <li>
+                <div class="act-dot" style="background: #ff6b00"></div>
+                <div class="act-body">
+                  <strong>Evento criado</strong
+                  ><span>Início das Matrículas 2024/2</span
+                  ><time>5 horas atrás</time>
+                </div>
+              </li>
+              <li>
+                <div class="act-dot" style="background: #47b84f"></div>
+                <div class="act-body">
+                  <strong>Contato adicionado</strong
+                  ><span>Prof. Maria Silva</span><time>1 dia atrás</time>
+                </div>
+              </li>
+              <li>
+                <div class="act-dot" style="background: #2f67d8"></div>
+                <div class="act-body">
+                  <strong>Disciplina criada</strong
+                  ><span>Inteligência Artificial</span><time>2 dias atrás</time>
+                </div>
+              </li>
+              <li>
+                <div class="act-dot" style="background: #ff6b00"></div>
+                <div class="act-body">
+                  <strong>Evento atualizado</strong
+                  ><span>Semana Acadêmica de Computação</span
+                  ><time>3 dias atrás</time>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

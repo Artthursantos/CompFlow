@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Eventos</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html" class="active"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">A</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Admin</h4>
+              <span>Administrador</span>
+            </div>
+            <a href="admin-perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Eventos</h1>
+            <p>Gerencie datas importantes e eventos acadêmicos</p>
+          </div>
+          <button class="btn-primary" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Novo Evento
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="busca"
+                placeholder="Buscar por título..."
+                oninput="renderTabela()"
+              />
+            </div>
+            <select
+              class="filter-select"
+              id="filtroTipo"
+              onchange="renderTabela()"
+            >
+              <option value="">Todos os tipos</option>
+              <option value="PRAZO">Prazo</option>
+              <option value="EVENTO_ACADEMICO">Evento Acadêmico</option>
+              <option value="FERIADO">Feriado</option>
+            </select>
+          </div>
+          <div class="table-count" id="count"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Data Início</th>
+                  <th>Data Fim</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr>
+                  <td
+                    colspan="5"
+                    style="text-align: center; color: #aaa; padding: 30px"
+                  >
+                    Carregando...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal-overlay hidden"
+      id="modalOverlay"
+      onclick="fecharSeForaModal(event)"
+    >
+      <div class="modal">
+        <h3 id="modalTitulo">Novo Evento</h3>
+        <div
+          id="modalAlert"
+          style="
+            display: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            background: #fde8e8;
+            color: #c62828;
+          "
+        ></div>
+        <div class="form-group">
+          <label>Título do Evento</label>
+          <input
+            type="text"
+            id="fTitulo"
+            placeholder="ex: Início do Semestre"
+          />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data Início</label>
+            <input type="date" id="fDataInicio" />
+          </div>
+          <div class="form-group">
+            <label>Data Fim (opcional)</label>
+            <input type="date" id="fDataFim" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="fTipo">
+            <option value="EVENTO_ACADEMICO">Evento Acadêmico</option>
+            <option value="PRAZO">Prazo</option>
+            <option value="FERIADO">Feriado</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel-modal" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button class="btn-primary" id="btnSalvar" onclick="salvar()">
+            Criar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario || usuario.role !== "ADMIN")
+        window.location.href = "login.html";
+
+      document.getElementById("nomeSidebar").textContent = usuario.nome;
+      document.getElementById("avatarSidebar").textContent =
+        usuario.nome[0].toUpperCase();
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      let eventos = [];
+      let editId = null;
+
+      const BADGE = {
+        PRAZO: "badge-prazo",
+        EVENTO_ACADEMICO: "badge-academico",
+        FERIADO: "badge-feriado",
+      };
+      const LABEL = {
+        PRAZO: "Prazo",
+        EVENTO_ACADEMICO: "Evento Acadêmico",
+        FERIADO: "Feriado",
+      };
+
+      // GET /api/eventos
+      async function carregar() {
+        try {
+          const res = await fetch(`${BASE}/eventos`);
+          eventos = await res.json();
+          renderTabela();
+        } catch {
+          document.getElementById("tbody").innerHTML =
+            '<tr><td colspan="5" style="color:#e53935;text-align:center;padding:20px;">Erro ao carregar. Verifique se a API está rodando.</td></tr>';
+        }
+      }
+
+      function renderTabela() {
+        const busca = document.getElementById("busca").value.toLowerCase();
+        const tipo = document.getElementById("filtroTipo").value;
+        let lista = eventos;
+        if (busca)
+          lista = lista.filter((e) => e.titulo.toLowerCase().includes(busca));
+        if (tipo) lista = lista.filter((e) => e.tipo === tipo);
+
+        document.getElementById("count").textContent =
+          `Lista de Eventos (${lista.length})`;
+        document.getElementById("tbody").innerHTML = lista.length
+          ? lista
+              .map(
+                (e) => `
+      <tr>
+        <td style="font-weight:600;">${e.titulo}</td>
+        <td style="color:#555;">${e.dataInicio || "—"}</td>
+        <td style="color:#555;">${e.dataFim || "—"}</td>
+        <td><span class="badge ${BADGE[e.tipo] || ""}">${LABEL[e.tipo] || e.tipo}</span></td>
+        <td><div class="tbl-actions">
+          <button class="btn-icon btn-edit" onclick="abrirEditar(${e.id})"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon btn-del"  onclick="excluir(${e.id})"><i class="fa-solid fa-trash"></i></button>
+        </div></td>
+      </tr>`,
+              )
+              .join("")
+          : '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px;">Nenhum evento encontrado.</td></tr>';
+      }
+
+      function abrirModal() {
+        editId = null;
+        document.getElementById("modalTitulo").textContent = "Novo Evento";
+        document.getElementById("btnSalvar").textContent = "Criar";
+        ["fTitulo", "fDataInicio", "fDataFim"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("fTipo").value = "EVENTO_ACADEMICO";
+        document.getElementById("modalAlert").style.display = "none";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function abrirEditar(id) {
+        const e = eventos.find((x) => x.id === id);
+        editId = id;
+        document.getElementById("modalTitulo").textContent = "Editar Evento";
+        document.getElementById("btnSalvar").textContent = "Salvar";
+        document.getElementById("fTitulo").value = e.titulo;
+        document.getElementById("fDataInicio").value = e.dataInicio || "";
+        document.getElementById("fDataFim").value = e.dataFim || "";
+        document.getElementById("fTipo").value = e.tipo;
+        document.getElementById("modalAlert").style.display = "none";
+        document.getElementById("modalOverlay").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+      function fecharSeForaModal(e) {
+        if (e.target === e.currentTarget) fecharModal();
+      }
+
+      // POST /api/eventos  ou  PUT /api/eventos/{id}
+      async function salvar() {
+        const titulo = document.getElementById("fTitulo").value.trim();
+        const dataInicio = document.getElementById("fDataInicio").value;
+        const dataFim = document.getElementById("fDataFim").value || null;
+        const tipo = document.getElementById("fTipo").value;
+        if (!titulo || !dataInicio) {
+          const al = document.getElementById("modalAlert");
+          al.textContent = "Informe título e data de início.";
+          al.style.display = "block";
+          return;
+        }
+
+        const btn = document.getElementById("btnSalvar");
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
+
+        try {
+          const url = editId ? `${BASE}/eventos/${editId}` : `${BASE}/eventos`;
+          const method = editId ? "PUT" : "POST";
+          const res = await fetch(url, {
+            method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ titulo, dataInicio, dataFim, tipo }),
+          });
+          if (!res.ok) throw new Error();
+          fecharModal();
+          carregar();
+        } catch {
+          const al = document.getElementById("modalAlert");
+          al.textContent = "Erro ao salvar. Tente novamente.";
+          al.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = editId ? "Salvar" : "Criar";
+        }
+      }
+
+      // DELETE /api/eventos/{id}
+      async function excluir(id) {
+        if (!confirm("Excluir este evento?")) return;
+        await fetch(`${BASE}/eventos/${id}`, { method: "DELETE" });
+        carregar();
+      }
+
+      carregar();
+    </script>
+  </body>
+</html>

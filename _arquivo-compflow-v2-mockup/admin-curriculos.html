@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Currículos</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Editor layout */
+      .editor-layout {
+        display: grid;
+        grid-template-columns: 290px 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      .bank-card {
+        position: sticky;
+        top: 20px;
+      }
+      .bank-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-height: 540px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .bank-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .bank-list::-webkit-scrollbar-thumb {
+        background: #d0d4e0;
+        border-radius: 4px;
+      }
+      .bank-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 11px;
+        border-radius: 10px;
+        background: #f8f9fb;
+        border: 1.5px solid transparent;
+        transition: 0.15s;
+      }
+      .bank-item:hover:not(.em-uso) {
+        border-color: #fecaca;
+        background: #fef2f2;
+      }
+      .bank-item.em-uso {
+        opacity: 0.55;
+      }
+      .bi-left {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+      .bi-cod {
+        font-size: 10px;
+        color: #aaa;
+        font-weight: 700;
+      }
+      .bi-nome {
+        font-size: 12px;
+        color: #222;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .bi-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .bi-cred {
+        font-size: 11px;
+        color: #888;
+        font-weight: 600;
+      }
+      .bi-badge {
+        font-size: 10px;
+        font-weight: 700;
+        background: #dcfce7;
+        color: #166534;
+        padding: 2px 8px;
+        border-radius: 20px;
+      }
+      .bi-add {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        border: none;
+        background: #991b1b;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+      }
+      .bi-add:hover {
+        background: #7f1d1d;
+      }
+      /* Picker */
+      .picker {
+        position: absolute;
+        right: 0;
+        top: 110%;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        padding: 8px;
+        z-index: 50;
+        min-width: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .picker-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        padding: 3px 8px 6px;
+      }
+      .picker-opt {
+        background: #f8f9fb;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+        transition: 0.15s;
+      }
+      .picker-opt:hover {
+        background: #fef2f2;
+        color: #7f1d1d;
+      }
+      .picker-cancel {
+        background: none;
+        border: none;
+        font-size: 12px;
+        color: #aaa;
+        cursor: pointer;
+        padding: 5px 8px;
+        text-align: left;
+        font-family: inherit;
+      }
+      /* Semestres */
+      .sem-col {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .sem-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .resumo-tag {
+        font-size: 13px;
+        font-weight: 700;
+        color: #555;
+        background: white;
+        padding: 8px 14px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      }
+      .btn-add-sem {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: #991b1b;
+        color: white;
+        border: none;
+        padding: 9px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-add-sem:hover {
+        background: #7f1d1d;
+      }
+      .sem-block {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+      .sem-block-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 18px;
+        background: #7f1d1d;
+        color: white;
+      }
+      .sem-num {
+        font-size: 14px;
+        font-weight: 700;
+        flex: 1;
+      }
+      .sem-badge {
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+      .btn-rem-sem {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: 0.2s;
+      }
+      .btn-rem-sem:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .sem-discs {
+        display: flex;
+        flex-direction: column;
+      }
+      .sem-empty {
+        padding: 16px 18px;
+        font-size: 13px;
+        color: #aaa;
+        text-align: center;
+      }
+      .disc-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 18px;
+        border-bottom: 1px solid #f0f1f5;
+        transition: 0.15s;
+      }
+      .disc-item:last-child {
+        border-bottom: none;
+      }
+      .disc-item:hover {
+        background: #fff8f8;
+      }
+      .di-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+      }
+      .di-left i {
+        color: #47b84f;
+        font-size: 18px;
+      }
+      .di-nome {
+        font-size: 13px;
+        font-weight: 600;
+        color: #222;
+      }
+      .di-cod {
+        font-size: 11px;
+        color: #aaa;
+      }
+      .di-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      .di-cred {
+        font-size: 12px;
+        font-weight: 700;
+        color: #555;
+        background: #f3f4f8;
+        padding: 2px 9px;
+        border-radius: 20px;
+      }
+      .btn-rem-disc {
+        background: #fde8e8;
+        border: none;
+        color: #e53935;
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+      .btn-rem-disc:hover {
+        background: #fbb;
+      }
+      .empty-sem {
+        text-align: center;
+        padding: 50px 20px;
+        color: #ccc;
+      }
+      .empty-sem i {
+        font-size: 42px;
+        margin-bottom: 12px;
+        display: block;
+      }
+      /* Back btn */
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f3f4f8;
+        border: none;
+        color: #555;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 8px;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .btn-back:hover {
+        background: #e0e4ef;
+        color: #7f1d1d;
+      }
+      .field-input-lg {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #e0e4ef;
+        border-radius: 10px;
+        font-size: 15px;
+        color: #222;
+        outline: none;
+        font-family: inherit;
+        transition: 0.2s;
+      }
+      .field-input-lg:focus {
+        border-color: #991b1b;
+        box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.08);
+      }
+      .field-input-lg::placeholder {
+        color: #bbb;
+      }
+      @media (max-width: 900px) {
+        .editor-layout {
+          grid-template-columns: 1fr;
+        }
+        .bank-card {
+          position: static;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <div class="sidebar-label">Painel Administrativo</div>
+        <nav class="menu">
+          <a href="admin-dashboard.html"
+            ><i class="fa-solid fa-house"></i> Dashboard</a
+          >
+          <a href="admin-disciplinas.html"
+            ><i class="fa-solid fa-book"></i> Disciplinas</a
+          >
+          <a href="admin-eventos.html"
+            ><i class="fa-regular fa-calendar"></i> Eventos</a
+          >
+          <a href="admin-contatos.html"
+            ><i class="fa-solid fa-users"></i> Contatos</a
+          >
+          <a href="admin-curriculos.html" class="active"
+            ><i class="fa-solid fa-graduation-cap"></i> Currículos</a
+          >
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar">A</div>
+            <div class="user-info">
+              <h4>Admin</h4>
+              <span>Administrador</span>
+            </div>
+          </div>
+          <a href="login.html" class="logout"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <!-- ── LISTA ── -->
+        <div id="viewLista">
+          <div class="page-header">
+            <div>
+              <h1>Currículos</h1>
+              <p>Gerencie os currículos e vincule disciplinas por semestre</p>
+            </div>
+            <button class="btn-primary" onclick="abrirNovo()">
+              <i class="fa-solid fa-plus"></i> Novo Currículo
+            </button>
+          </div>
+          <div class="card">
+            <div class="toolbar">
+              <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="buscaCurr"
+                  placeholder="Buscar por nome do curso..."
+                  oninput="renderLista()"
+                />
+              </div>
+            </div>
+            <div class="table-count" id="countCurr"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nome do Curso</th>
+                    <th>Disciplinas</th>
+                    <th>Semestres</th>
+                    <th>Total de Créditos</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyCurr"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EDITOR ── -->
+        <div id="viewEditor" class="hidden">
+          <div class="page-header">
+            <div>
+              <button class="btn-back" onclick="voltarLista()">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+              </button>
+              <h1 id="edTitulo">Novo Currículo</h1>
+              <p style="color: #777; font-size: 13px; margin-top: 4px">
+                Defina o nome do curso e distribua as disciplinas por semestre
+              </p>
+            </div>
+            <button class="btn-primary" onclick="salvarCurriculo()">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Currículo
+            </button>
+          </div>
+
+          <!-- Nome do curso -->
+          <div class="card" style="margin-bottom: 18px">
+            <h2>Informações do Curso</h2>
+            <input
+              type="text"
+              class="field-input-lg"
+              id="edNome"
+              placeholder="ex: Ciência da Computação"
+              style="max-width: 480px"
+            />
+          </div>
+
+          <!-- Editor dois painéis -->
+          <div class="editor-layout">
+            <!-- Banco de disciplinas -->
+            <div class="card bank-card">
+              <h2>Disciplinas Disponíveis</h2>
+              <div class="search-wrap" style="margin-bottom: 12px">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="buscaDisc"
+                  placeholder="Buscar disciplina..."
+                  oninput="renderBanco()"
+                />
+              </div>
+              <div class="bank-list" id="bankList"></div>
+            </div>
+
+            <!-- Semestres -->
+            <div class="sem-col">
+              <div class="sem-top">
+                <div class="resumo-tag" id="resumoTag">
+                  0 disciplinas · 0 semestres · 0 créditos
+                </div>
+                <button class="btn-add-sem" onclick="addSemestre()">
+                  <i class="fa-solid fa-plus"></i> Adicionar Semestre
+                </button>
+              </div>
+              <div id="semContainer"></div>
+              <div class="empty-sem" id="emptySem">
+                <i class="fa-solid fa-layer-group"></i>
+                <p>
+                  Nenhum semestre adicionado.<br />Clique em "Adicionar
+                  Semestre" para começar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal excluir -->
+    <div
+      class="modal-overlay hidden"
+      id="modalDel"
+      onclick="if (event.target === this) this.classList.add('hidden');"
+    >
+      <div class="modal" style="max-width: 360px">
+        <h3>Excluir Currículo</h3>
+        <p style="color: #555; font-size: 14px; margin-bottom: 20px">
+          Tem certeza? Esta ação não pode ser desfeita.
+        </p>
+        <div class="modal-footer">
+          <button
+            class="btn-cancel-modal"
+            onclick="
+              document.getElementById('modalDel').classList.add('hidden')
+            "
+          >
+            Cancelar
+          </button>
+          <button
+            class="btn-primary"
+            style="background: #dc2626"
+            onclick="confirmarDel()"
+          >
+            <i class="fa-solid fa-trash"></i> Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── BANCO DE DISCIPLINAS ──────────────────────
+      const todasDisc = [
+        { id: 1, codigo: "1110179", nome: "Sistemas Discretos", creditos: 4 },
+        {
+          id: 2,
+          codigo: "1110180",
+          nome: "Algoritmos e Programação",
+          creditos: 4,
+        },
+        {
+          id: 3,
+          codigo: "1110181",
+          nome: "Introdução à Computação",
+          creditos: 2,
+        },
+        { id: 4, codigo: "0100301", nome: "Cálculo 1", creditos: 4 },
+        {
+          id: 5,
+          codigo: "1110182",
+          nome: "Algoritmos e Estrutura de Dados I",
+          creditos: 4,
+        },
+        { id: 6, codigo: "0100302", nome: "Álgebra Linear", creditos: 4 },
+        {
+          id: 7,
+          codigo: "1110183",
+          nome: "Algoritmos e Estrutura de Dados II",
+          creditos: 4,
+        },
+        {
+          id: 8,
+          codigo: "1110184",
+          nome: "Programação Orientada a Objetos",
+          creditos: 4,
+        },
+        { id: 9, codigo: "1110185", nome: "Banco de Dados I", creditos: 4 },
+        {
+          id: 10,
+          codigo: "1110186",
+          nome: "Redes de Computadores",
+          creditos: 4,
+        },
+        {
+          id: 11,
+          codigo: "1110187",
+          nome: "Sistemas Operacionais",
+          creditos: 4,
+        },
+        {
+          id: 12,
+          codigo: "1110188",
+          nome: "Engenharia de Software I",
+          creditos: 4,
+        },
+        {
+          id: 13,
+          codigo: "1110189",
+          nome: "Inteligência Artificial",
+          creditos: 4,
+        },
+        { id: 14, codigo: "1110190", nome: "Computação Gráfica", creditos: 4 },
+        { id: 15, codigo: "1110191", nome: "TCC I", creditos: 4 },
+        { id: 16, codigo: "1110192", nome: "TCC II", creditos: 8 },
+      ];
+
+      // ── ESTADO ───────────────────────────────────
+      let curriculos = [
+        {
+          id: 1,
+          nome: "Ciência da Computação",
+          semestres: [
+            {
+              num: 1,
+              discs: [
+                {
+                  id: 1,
+                  codigo: "1110179",
+                  nome: "Sistemas Discretos",
+                  creditos: 4,
+                },
+                {
+                  id: 2,
+                  codigo: "1110180",
+                  nome: "Algoritmos e Programação",
+                  creditos: 4,
+                },
+              ],
+            },
+            {
+              num: 2,
+              discs: [
+                { id: 4, codigo: "0100301", nome: "Cálculo 1", creditos: 4 },
+                {
+                  id: 5,
+                  codigo: "1110182",
+                  nome: "Algoritmos e Estrutura de Dados I",
+                  creditos: 4,
+                },
+              ],
+            },
+          ],
+        },
+      ];
+      let nextCurrId = 2;
+      let editCurrId = null;
+      let delPendente = null;
+      let edSemestres = [];
+      let pickerAberto = null;
+
+      // ── HELPERS ───────────────────────────────────
+      function totalCr(sems) {
+        return sems.reduce(
+          (a, s) => a + s.discs.reduce((b, d) => b + d.creditos, 0),
+          0,
+        );
+      }
+      function totalDiscs(sems) {
+        return sems.reduce((a, s) => a + s.discs.length, 0);
+      }
+      function discUsadas() {
+        return edSemestres.flatMap((s) => s.discs.map((d) => d.id));
+      }
+      function fecharPicker() {
+        pickerAberto = null;
+        renderBanco();
+      }
+
+      // ── LISTA ─────────────────────────────────────
+      function renderLista() {
+        const busca = document.getElementById("buscaCurr").value.toLowerCase();
+        let lista = curriculos;
+        if (busca)
+          lista = lista.filter((c) => c.nome.toLowerCase().includes(busca));
+        document.getElementById("countCurr").textContent =
+          `Lista de Currículos (${lista.length})`;
+        document.getElementById("tbodyCurr").innerHTML = lista
+          .map(
+            (c) => `
+    <tr>
+      <td style="font-weight:700;">${c.nome}</td>
+      <td>${totalDiscs(c.semestres)}</td>
+      <td>${c.semestres.length}</td>
+      <td>${totalCr(c.semestres)} créditos</td>
+      <td><div class="tbl-actions">
+        <button class="btn-icon btn-edit" onclick="abrirEditar(${c.id})"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn-icon btn-del"  onclick="pedirDel(${c.id})"><i class="fa-solid fa-trash"></i></button>
+      </div></td>
+    </tr>`,
+          )
+          .join("");
+      }
+
+      // ── NAVEGAÇÃO ─────────────────────────────────
+      function mostrar(tela) {
+        document
+          .getElementById("viewLista")
+          .classList.toggle("hidden", tela !== "lista");
+        document
+          .getElementById("viewEditor")
+          .classList.toggle("hidden", tela !== "editor");
+      }
+
+      function voltarLista() {
+        mostrar("lista");
+        renderLista();
+      }
+
+      function abrirNovo() {
+        editCurrId = null;
+        edSemestres = [];
+        document.getElementById("edTitulo").textContent = "Novo Currículo";
+        document.getElementById("edNome").value = "";
+        mostrar("editor");
+        renderEditor();
+      }
+
+      function abrirEditar(id) {
+        const c = curriculos.find((x) => x.id === id);
+        editCurrId = id;
+        edSemestres = c.semestres.map((s) => ({
+          num: s.num,
+          discs: [...s.discs],
+        }));
+        document.getElementById("edTitulo").textContent = "Editar Currículo";
+        document.getElementById("edNome").value = c.nome;
+        mostrar("editor");
+        renderEditor();
+      }
+
+      // ── EDITOR ────────────────────────────────────
+      function renderEditor() {
+        renderBanco();
+        renderSemestres();
+        renderResumo();
+      }
+
+      function renderBanco() {
+        const busca = document.getElementById("buscaDisc").value.toLowerCase();
+        const usadas = discUsadas();
+        let lista = todasDisc;
+        if (busca)
+          lista = lista.filter(
+            (d) =>
+              d.nome.toLowerCase().includes(busca) || d.codigo.includes(busca),
+          );
+
+        document.getElementById("bankList").innerHTML = lista
+          .map((d) => {
+            const emUso = usadas.includes(d.id);
+            return `<div class="bank-item${emUso ? " em-uso" : ""}">
+      <div class="bi-left">
+        <span class="bi-cod">${d.codigo}</span>
+        <span class="bi-nome">${d.nome}</span>
+      </div>
+      <div class="bi-right">
+        <span class="bi-cred">${d.creditos} cr.</span>
+        ${
+          emUso
+            ? `<span class="bi-badge">Em uso</span>`
+            : `<button class="bi-add" onclick="togglePicker(${d.id},event)"><i class="fa-solid fa-plus"></i></button>
+             ${pickerAberto === d.id ? renderPicker(d.id) : ""}`
+        }
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function renderPicker(discId) {
+        if (!edSemestres.length)
+          return `<div class="picker"><div class="picker-title">Nenhum semestre criado</div><button class="picker-cancel" onclick="fecharPicker()">Fechar</button></div>`;
+        return `<div class="picker">
+    <div class="picker-title">Adicionar ao semestre:</div>
+    ${edSemestres
+      .map(
+        (s, si) => `
+      <button class="picker-opt" onclick="addDiscSem(${si},${discId})">${s.num}º Semestre</button>`,
+      )
+      .join("")}
+    <button class="picker-cancel" onclick="fecharPicker()">Cancelar</button>
+  </div>`;
+      }
+
+      function togglePicker(discId, e) {
+        e.stopPropagation();
+        pickerAberto = pickerAberto === discId ? null : discId;
+        renderBanco();
+      }
+
+      document.addEventListener("click", () => {
+        if (pickerAberto) {
+          pickerAberto = null;
+          renderBanco();
+        }
+      });
+
+      function addDiscSem(si, discId) {
+        const d = todasDisc.find((x) => x.id === discId);
+        if (!edSemestres[si].discs.find((x) => x.id === discId)) {
+          edSemestres[si].discs.push({ ...d });
+        }
+        pickerAberto = null;
+        renderEditor();
+      }
+
+      function remDiscSem(si, discId) {
+        edSemestres[si].discs = edSemestres[si].discs.filter(
+          (d) => d.id !== discId,
+        );
+        renderEditor();
+      }
+
+      function addSemestre() {
+        const max = edSemestres.length
+          ? Math.max(...edSemestres.map((s) => s.num))
+          : 0;
+        edSemestres.push({ num: max + 1, discs: [] });
+        renderEditor();
+      }
+
+      function remSemestre(si) {
+        if (!confirm(`Remover ${edSemestres[si].num}º semestre?`)) return;
+        edSemestres.splice(si, 1);
+        edSemestres.forEach((s, i) => (s.num = i + 1));
+        renderEditor();
+      }
+
+      function renderSemestres() {
+        const cont = document.getElementById("semContainer");
+        const empty = document.getElementById("emptySem");
+        if (!edSemestres.length) {
+          cont.innerHTML = "";
+          empty.classList.remove("hidden");
+          return;
+        }
+        empty.classList.add("hidden");
+        cont.innerHTML = edSemestres
+          .map((s, si) => {
+            const cr = s.discs.reduce((a, d) => a + d.creditos, 0);
+            return `<div class="sem-block">
+      <div class="sem-block-header">
+        <span class="sem-num">${s.num}º Semestre</span>
+        <span class="sem-badge">${cr} créditos · ${s.discs.length} disciplinas</span>
+        <button class="btn-rem-sem" onclick="remSemestre(${si})"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      <div class="sem-discs">
+        ${
+          s.discs.length === 0
+            ? `<div class="sem-empty">Nenhuma disciplina. Use o "+" nas disciplinas disponíveis.</div>`
+            : s.discs
+                .map(
+                  (d) => `
+            <div class="disc-item">
+              <div class="di-left"><i class="fa-regular fa-circle-check"></i><div><div class="di-nome">${d.nome}</div><div class="di-cod">${d.codigo}</div></div></div>
+              <div class="di-right">
+                <span class="di-cred">${d.creditos} cr.</span>
+                <button class="btn-rem-disc" onclick="remDiscSem(${si},${d.id})"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            </div>`,
+                )
+                .join("")
+        }
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function renderResumo() {
+        const cr = totalCr(edSemestres);
+        const di = discUsadas().length;
+        document.getElementById("resumoTag").textContent =
+          `${di} disciplinas · ${edSemestres.length} semestres · ${cr} créditos`;
+      }
+
+      // ── SALVAR ────────────────────────────────────
+      function salvarCurriculo() {
+        const nome = document.getElementById("edNome").value.trim();
+        if (!nome) {
+          alert("Informe o nome do curso.");
+          return;
+        }
+        if (!edSemestres.length) {
+          alert("Adicione ao menos um semestre.");
+          return;
+        }
+        const sems = edSemestres.map((s) => ({
+          num: s.num,
+          discs: [...s.discs],
+        }));
+        if (editCurrId) {
+          const c = curriculos.find((x) => x.id === editCurrId);
+          c.nome = nome;
+          c.semestres = sems;
+        } else {
+          curriculos.push({ id: nextCurrId++, nome, semestres: sems });
+        }
+        voltarLista();
+      }
+
+      // ── EXCLUSÃO ─────────────────────────────────
+      function pedirDel(id) {
+        delPendente = id;
+        document.getElementById("modalDel").classList.remove("hidden");
+      }
+      function confirmarDel() {
+        curriculos = curriculos.filter((c) => c.id !== delPendente);
+        delPendente = null;
+        document.getElementById("modalDel").classList.add("hidden");
+        renderLista();
+      }
+
+      // Init
+      renderLista();
+    </script>
+  </body>
+</html>

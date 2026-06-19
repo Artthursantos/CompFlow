@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CompFlow - Dashboard</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      .progress-card h2 {
+        color: #173d7a;
+        margin-bottom: 18px;
+        font-size: 16px;
+      }
+      .progress-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+      .progress-area {
+        flex: 1;
+        min-width: 200px;
+      }
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #555;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 12px;
+        background: #ddd;
+        border-radius: 20px;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #42b649;
+        border-radius: 20px;
+        transition: 0.5s;
+        width: 0%;
+      }
+      .stats {
+        display: flex;
+        gap: 40px;
+      }
+      .stats h3 {
+        color: #173d7a;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .stats span {
+        color: #888;
+        font-size: 13px;
+      }
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 22px;
+      }
+      .feature-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: 0.2s;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+      }
+      .feature-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      }
+      .feature-card h3 {
+        margin: 12px 0 6px;
+        color: #173d7a;
+        font-size: 15px;
+      }
+      .feature-card p {
+        color: #777;
+        font-size: 13px;
+      }
+      .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+      }
+      .green {
+        background: #3fb950;
+      }
+      .blue {
+        background: #2f67d8;
+      }
+      .orange {
+        background: #ff6b00;
+      }
+      .gray {
+        background: #8f8f8f;
+      }
+      .events-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .events-header h2 {
+        color: #173d7a;
+        font-size: 16px;
+      }
+      .events-header a {
+        text-decoration: none;
+        color: #173d7a;
+        font-size: 13px;
+      }
+      .events {
+        list-style: none;
+      }
+      .events li {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 16px;
+        align-items: flex-start;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+      .events h4 {
+        color: #173d7a;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+      .events p {
+        color: #888;
+        font-size: 12px;
+      }
+      .loading {
+        text-align: center;
+        color: #aaa;
+        padding: 30px;
+        font-size: 14px;
+      }
+      @media (max-width: 1000px) {
+        .cards-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="logo">CompFlow</div>
+        <nav class="menu">
+          <a href="dashboard.html" class="active"
+            ><i class="fa-solid fa-house"></i> Início</a
+          >
+          <a href="meuprogresso.html"
+            ><i class="fa-solid fa-award"></i> Meu Progresso</a
+          >
+          <a href="fluxograma.html"
+            ><i class="fa-solid fa-arrow-trend-up"></i> Fluxograma</a
+          >
+          <a href="calendario.html"
+            ><i class="fa-regular fa-calendar"></i> Calendário</a
+          >
+          <a href="contatos.html"><i class="fa-solid fa-users"></i> Contatos</a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-box">
+            <div class="avatar" id="avatarSidebar">U</div>
+            <div class="user-info">
+              <h4 id="nomeSidebar">Carregando...</h4>
+              <span id="cursoSidebar"></span>
+            </div>
+            <a href="perfil.html"
+              ><i
+                class="fa-solid fa-gear"
+                style="color: white; font-size: 14px"
+              ></i
+            ></a>
+          </div>
+          <a href="#" class="logout" onclick="sair()"
+            ><i class="fa-solid fa-chevron-left"></i> Sair</a
+          >
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h1 id="tituloBV">Olá! 👋</h1>
+          <p style="color: #777">Acompanhe seu planejamento acadêmico</p>
+        </header>
+
+        <!-- Resumo do Progresso -->
+        <section class="card progress-card">
+          <h2>Resumo do Progresso</h2>
+          <div id="progressoArea" class="loading">Carregando progresso...</div>
+        </section>
+
+        <!-- Cards de navegação -->
+        <section class="cards-grid">
+          <a href="meuprogresso.html" class="feature-card">
+            <div class="icon green"><i class="fa-solid fa-award"></i></div>
+            <h3>Meu Progresso</h3>
+            <p>Acompanhe suas disciplinas e créditos concluídos</p>
+          </a>
+          <a href="fluxograma.html" class="feature-card">
+            <div class="icon blue">
+              <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+            <h3>Fluxograma</h3>
+            <p>Visualize o fluxograma completo do seu curso</p>
+          </a>
+          <a href="calendario.html" class="feature-card">
+            <div class="icon orange">
+              <i class="fa-regular fa-calendar"></i>
+            </div>
+            <h3>Calendário</h3>
+            <p>Fique por dentro dos eventos e datas importantes</p>
+          </a>
+          <a href="contatos.html" class="feature-card">
+            <div class="icon gray"><i class="fa-solid fa-users"></i></div>
+            <h3>Contatos</h3>
+            <p>Encontre professores e coordenação do curso</p>
+          </a>
+        </section>
+
+        <!-- Próximos Eventos -->
+        <section class="card">
+          <div class="events-header">
+            <h2>Próximos Eventos</h2>
+            <a href="calendario.html">Ver todos</a>
+          </div>
+          <ul class="events" id="listaEventos">
+            <li class="loading">Carregando eventos...</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const BASE = "http://localhost:8080/api";
+      const usuario = JSON.parse(localStorage.getItem("usuario"));
+      if (!usuario) window.location.href = "login.html";
+
+      // Preenche sidebar
+      document.getElementById("nomeSidebar").textContent = usuario.nome;
+      document.getElementById("cursoSidebar").textContent =
+        usuario.nomeCurso || "";
+      document.getElementById("avatarSidebar").textContent =
+        usuario.nome[0].toUpperCase();
+      document.getElementById("tituloBV").textContent =
+        `Olá, ${usuario.nome.split(" ")[0]}! 👋`;
+
+      function sair() {
+        localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      }
+
+      const TIPO_COR = {
+        PRAZO: "#f44336",
+        EVENTO_ACADEMICO: "#4caf50",
+        FERIADO: "#ff9800",
+      };
+
+      // GET /api/progresso/{usuarioId} e GET /api/eventos
+      async function carregar() {
+        try {
+          const [resProg, resEvs] = await Promise.all([
+            fetch(`${BASE}/progresso/${usuario.id}`),
+            fetch(`${BASE}/eventos`),
+          ]);
+          const prog = await resProg.json();
+          const evs = await resEvs.json();
+
+          // Progresso
+          document.getElementById("progressoArea").innerHTML = `
+        <div class="progress-content">
+          <div class="progress-area">
+            <div class="progress-info">
+              <span>Progresso geral</span><span>${prog.percentual}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:${prog.percentual}%"></div>
+            </div>
+          </div>
+          <div class="stats">
+            <div><h3>${prog.aprovadas}/${prog.totalDisciplinas}</h3><span>Disciplinas</span></div>
+            <div><h3>${prog.creditorConcluidos}/${prog.totalCreditos}</h3><span>Créditos</span></div>
+          </div>
+        </div>`;
+
+          // Próximos eventos
+          const hoje = new Date().toISOString().slice(0, 10);
+          const proximos = evs
+            .filter((e) => e.dataInicio >= hoje)
+            .sort((a, b) => a.dataInicio.localeCompare(b.dataInicio))
+            .slice(0, 5);
+
+          if (!proximos.length) {
+            document.getElementById("listaEventos").innerHTML =
+              '<li style="color:#aaa;font-size:13px;">Nenhum evento próximo.</li>';
+            return;
+          }
+
+          document.getElementById("listaEventos").innerHTML = proximos
+            .map(
+              (ev) => `
+        <li>
+          <span class="dot" style="background:${TIPO_COR[ev.tipo] || "#2f67d8"}"></span>
+          <div><h4>${ev.titulo}</h4><p>${ev.dataInicio}</p></div>
+        </li>`,
+            )
+            .join("");
+        } catch (err) {
+          document.getElementById("progressoArea").innerHTML =
+            '<p style="color:#e53935;font-size:13px;">Erro ao carregar dados. Verifique se a API está rodando.</p>';
+        }
+      }
+
+      carregar();
+    </script>
+  </body>
+</html>
